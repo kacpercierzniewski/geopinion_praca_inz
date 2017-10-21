@@ -1,10 +1,11 @@
 package com.example.kacper.geopinion;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -13,5 +14,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickRegisterButton(View view) {
+        Intent myIntent = new Intent(this, RegisterActivity.class);
+        startActivity(myIntent);
     }
 }
