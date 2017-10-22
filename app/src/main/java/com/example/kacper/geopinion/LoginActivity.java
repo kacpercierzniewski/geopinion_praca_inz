@@ -13,8 +13,14 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
     }
 
-    public void onClickRegisterButton(View view) {
-        Intent myIntent = new Intent(this, RegisterActivity.class);
-        startActivity(myIntent);
+    public void onButtonClick(View view) {
+        if(view.getId()==R.id.BsignUp){
+            Intent myIntent = new Intent(this, RegisterActivity.class);
+            startActivity(myIntent);
+        }
+        if (view.getId()==R.id.BsignIn){
+                                //-TO-DO
+            //logowanko
+        }
     }
 }

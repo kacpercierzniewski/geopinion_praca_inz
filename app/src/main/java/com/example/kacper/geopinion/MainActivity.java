@@ -14,4 +14,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickRegisterButton(View view) {
     }
+
+    public void onButtonClick(View view) {
+
+    }
 }

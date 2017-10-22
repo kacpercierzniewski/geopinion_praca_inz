@@ -6,7 +6,7 @@ package com.example.kacper.geopinion;
 
 public class User {
     int id;
-    String login;
+    private String login;
 
     public String getLogin() {
         return login;
@@ -24,11 +24,11 @@ public class User {
         this.password = password;
     }
 
-    String password;
-    String fName;
-    String lName;
-    String mail;
-    char[] settings;
+    private String password;
+    private String fName;
+    private String lName;
+    private String mail;
+    private char[] settings;
 
 
 
@@ -54,17 +54,17 @@ public class User {
     public char[] getSettings() {
         return settings;
     }
-    public void setfName(){
+    public void setfName(String fName){
         this.fName=fName;
     }
 
-    public void setlName(){
+    public void setlName(String lName){
         this.lName=lName;
     }
-    public void setMail(){
+    public void setMail(String mail){
         this.mail=mail;
     }
-    public void setSettings(){
+    public void setSettings(char[] settings){
         this.settings=settings;
     }
 }

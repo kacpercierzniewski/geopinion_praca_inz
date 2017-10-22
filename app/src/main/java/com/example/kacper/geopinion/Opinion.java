@@ -38,10 +38,10 @@ public class Opinion {
         this.stars = stars;
     }
 
-    int user_id;
-    String venue_id;
-    String text;
-    int stars;
+    private int user_id;
+    private String venue_id;
+    private String text;
+    private int stars;
 
     public Opinion(int user_id,String venue_id, String text, int stars){
         this.user_id=user_id;
