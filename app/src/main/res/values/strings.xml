@@ -14,7 +14,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="onlyAlphanumeric">Tylko znaki alfanumeryczne.</string>
+    <string name="onlyAlphanumeric">Użyto nieprawidłowych znaków.</string>
     <string name="max20characters">Maksymalnie 20 znaków.</string>
     <string name="differentPasswords">Hasła się od siebie różnią.</string>
     <string name="password">Hasło</string>
@@ -26,4 +26,6 @@
     <string name="repeatPassword">Powtórz hasło</string>
     <string name="logIn">Zaloguj się</string>
     <string name="signUp">Zarejestruj się</string>
+    <string name="loginExists">Podany login już istnieje.</string>
+    <string name="emailExists">Podany e-mail już istnieje.</string>
 </resources>

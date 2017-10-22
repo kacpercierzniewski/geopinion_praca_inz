@@ -1,7 +1,9 @@
 package com.example.kacper.geopinion;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -10,6 +12,7 @@ import org.apache.commons.validator.routines.EmailValidator;
 import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity {
+    DatabaseManager manager= new DatabaseManager(this);
     boolean error=false;
 
     @Override
@@ -20,7 +23,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void onSignUpButtonClick(View view) {
-
+        String settings= "0";
         TextView errorText= (TextView)findViewById(R.id.TVerror);
         errorText.setText(""); //czyścimy tekst po ponownym kliknięciu przycisku
         EditText fName= (EditText)findViewById(R.id.TFfName);
@@ -29,11 +32,11 @@ public class RegisterActivity extends AppCompatActivity {
         EditText pass= (EditText)findViewById(R.id.TFpass);
         EditText pass2= (EditText)findViewById(R.id.TFpass2);
         EditText email= (EditText)findViewById(R.id.TFemail);
-        checkAlphanumeric(login);
-        checkAlphanumeric(fName);
-        checkAlphanumeric(lName);
-        checkNoInputError(fName);
-        checkNoInputError(lName);
+        checkLetters(login);
+        checkLetters(fName);
+        checkLetters(lName);
+        checkNoInputError(fName); //TODO: mogą być nie tylko znaki alfanumeryczne np. nasze polskie ą czy ę
+        checkNoInputError(lName);// TODO: to samo co wyżej
         checkNoInputError(login);
         checkNoInputError(pass);
         checkNoInputError(pass2);
@@ -41,10 +44,31 @@ public class RegisterActivity extends AppCompatActivity {
         checkPasswordsMatch(pass,pass2);
         checkPasswordSecurity(pass);
         checkEmail(email);
+
+
+        if(manager.checkIfExists(login.getText().toString())){
+            login.setError(getString(R.string.loginExists));
+            error=true;
         }
-        void checkAlphanumeric(EditText l){
+
+        if(manager.checkIfExists(email.getText().toString())){
+            email.setError(getString(R.string.emailExists));
+            error=true;
+        }
+        if (!error){
+            Log.i("INFO","no errors");
+            User user= new User(fName.getText().toString(),lName.getText().toString(),login.getText().toString(),pass.getText().toString(),email.getText().toString(),settings);
+            manager.putUserToDB(user);
+            Log.i("INFO","reg success");
+            Intent myIntent= new Intent(this, LoginActivity.class);
+            startActivity(myIntent);
+
+            //wkładamy dane do bazy
+        }
+        }
+        void checkLetters(EditText l){
             String lStr= l.getText().toString();
-            String regex="^[a-zA-Z0-9]+$";
+            String regex="^[\\p{L}\\s0-9]+$";
             if (lStr.length()>20){
 
                 l.setError(getString(R.string.max20characters));
