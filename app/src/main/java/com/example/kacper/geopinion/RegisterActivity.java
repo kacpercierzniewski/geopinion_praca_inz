@@ -32,9 +32,9 @@ public class RegisterActivity extends AppCompatActivity {
         EditText pass= (EditText)findViewById(R.id.TFpass);
         EditText pass2= (EditText)findViewById(R.id.TFpass2);
         EditText email= (EditText)findViewById(R.id.TFemail);
-        checkLetters(login);
-        checkLetters(fName);
-        checkLetters(lName);
+        checkLetters(login,true);
+        checkLetters(fName,false);
+        checkLetters(lName,false);
         checkNoInputError(fName); //TODO: mogą być nie tylko znaki alfanumeryczne np. nasze polskie ą czy ę
         checkNoInputError(lName);// TODO: to samo co wyżej
         checkNoInputError(login);
@@ -66,9 +66,13 @@ public class RegisterActivity extends AppCompatActivity {
             //wkładamy dane do bazy
         }
         }
-        void checkLetters(EditText l){
+        void checkLetters(EditText l,boolean isLogin){
             String lStr= l.getText().toString();
             String regex="^[\\p{L}\\s0-9]+$";
+
+            if (isLogin){
+                regex="^[a-zA-Z0-9]+$";
+            }
             if (lStr.length()>20){
 
                 l.setError(getString(R.string.max20characters));
@@ -82,6 +86,12 @@ public class RegisterActivity extends AppCompatActivity {
                 l.setError(getString(R.string.minimum6Characters));
 
             }
+
+        }
+        void checkLettersForLogin(EditText et){
+
+
+
 
         }
         void checkNoInputError(EditText textField) {
