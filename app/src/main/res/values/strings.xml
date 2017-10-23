@@ -28,4 +28,5 @@
     <string name="signUp">Zarejestruj się</string>
     <string name="loginExists">Podany login już istnieje.</string>
     <string name="emailExists">Podany e-mail już istnieje.</string>
+    <string name="minimum6Characters">Minimalnie 6 znaków.</string>
 </resources>

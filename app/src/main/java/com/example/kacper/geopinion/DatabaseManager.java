@@ -54,9 +54,9 @@ class DatabaseManager extends SQLiteOpenHelper{
         db.insert(TABLE_NAME,null,values);
         db.close(); //ZAWSZE ZAMYKAMY BAZĘ PO INSERCIE !
     }
-    boolean checkIfExists(String s){
+    boolean checkIfExists(String column,String s){
         db=this.getReadableDatabase();
-        String query="select * from "+TABLE_NAME+" where login='"+s+"'";
+        String query="select * from "+TABLE_NAME+" where "+column+"='"+s+"'";
         Cursor cursor= db.rawQuery(query,null);
         Log.i("GETCOUNT",String.valueOf(cursor.getCount()));
         Log.i("GETCOLUMNCOUNT",String.valueOf(cursor.getColumnCount()));

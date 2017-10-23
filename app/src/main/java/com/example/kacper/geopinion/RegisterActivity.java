@@ -22,7 +22,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    public void onSignUpButtonClick(View view) {
+        public void onSignUpButtonClick(View view) {
         String settings= "0";
         TextView errorText= (TextView)findViewById(R.id.TVerror);
         errorText.setText(""); //czyścimy tekst po ponownym kliknięciu przycisku
@@ -46,12 +46,12 @@ public class RegisterActivity extends AppCompatActivity {
         checkEmail(email);
 
 
-        if(manager.checkIfExists(login.getText().toString())){
+        if(manager.checkIfExists("login",login.getText().toString())){
             login.setError(getString(R.string.loginExists));
             error=true;
         }
 
-        if(manager.checkIfExists(email.getText().toString())){
+        if(manager.checkIfExists("email",email.getText().toString())){
             email.setError(getString(R.string.emailExists));
             error=true;
         }
@@ -75,6 +75,11 @@ public class RegisterActivity extends AppCompatActivity {
             }
             if (!(Pattern.matches(regex,lStr))){
                 l.setError(getString(R.string.onlyAlphanumeric));
+
+            }
+            if (lStr.length()<6){
+
+                l.setError(getString(R.string.minimum6Characters));
 
             }
 
