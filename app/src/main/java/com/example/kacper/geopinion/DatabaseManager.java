@@ -58,8 +58,7 @@ class DatabaseManager extends SQLiteOpenHelper{
         db=this.getReadableDatabase();
         String query="select * from "+TABLE_NAME+" where "+column+"='"+s+"'";
         Cursor cursor= db.rawQuery(query,null);
-        Log.i("GETCOUNT",String.valueOf(cursor.getCount()));
-        Log.i("GETCOLUMNCOUNT",String.valueOf(cursor.getColumnCount()));
+        Log.i("numbers of response",String.valueOf(cursor.getCount()));
         if (cursor.getCount()>0){
             cursor.close();
             return true;

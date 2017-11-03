@@ -7,5 +7,6 @@ package com.example.kacper.geopinion;
 public class Venue {
     String venue_id;
     float average_stars;
+    
 
 }
