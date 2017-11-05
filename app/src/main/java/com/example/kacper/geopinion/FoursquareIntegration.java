@@ -1,10 +1,5 @@
 package com.example.kacper.geopinion;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.ActivityNotFoundException;
-import android.support.v4.app.ActivityCompat;
-
 import com.example.kacper.geopinion.Model.FoursquareModel;
 
 import retrofit2.Call;
