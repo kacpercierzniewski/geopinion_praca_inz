@@ -15,7 +15,7 @@ public class HereNow {
     private String summary;
     @SerializedName("groups")
     @Expose
-    private List<Object> groups = null;
+    private List<Group_> groups = null;
 
     public Integer getCount() {
         return count;
@@ -33,11 +33,11 @@ public class HereNow {
         this.summary = summary;
     }
 
-    public List<Object> getGroups() {
+    public List<Group_> getGroups() {
         return groups;
     }
 
-    public void setGroups(List<Object> groups) {
+    public void setGroups(List<Group_> groups) {
         this.groups = groups;
     }
 

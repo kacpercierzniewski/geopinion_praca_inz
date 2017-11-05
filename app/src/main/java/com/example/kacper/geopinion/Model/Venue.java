@@ -31,12 +31,6 @@ public class Venue {
     @SerializedName("url")
     @Expose
     private String url;
-    @SerializedName("price")
-    @Expose
-    private Price price;
-    @SerializedName("hasMenu")
-    @Expose
-    private Boolean hasMenu;
     @SerializedName("rating")
     @Expose
     private Double rating;
@@ -46,21 +40,15 @@ public class Venue {
     @SerializedName("ratingSignals")
     @Expose
     private Integer ratingSignals;
-    @SerializedName("menu")
-    @Expose
-    private Menu menu;
-    @SerializedName("allowMenuUrlEdit")
-    @Expose
-    private Boolean allowMenuUrlEdit;
     @SerializedName("beenHere")
     @Expose
     private BeenHere beenHere;
     @SerializedName("hours")
     @Expose
     private Hours hours;
-    @SerializedName("photos")
+    @SerializedName("storeId")
     @Expose
-    private Photos photos;
+    private String storeId;
     @SerializedName("hereNow")
     @Expose
     private HereNow hereNow;
@@ -129,22 +117,6 @@ public class Venue {
         this.url = url;
     }
 
-    public Price getPrice() {
-        return price;
-    }
-
-    public void setPrice(Price price) {
-        this.price = price;
-    }
-
-    public Boolean getHasMenu() {
-        return hasMenu;
-    }
-
-    public void setHasMenu(Boolean hasMenu) {
-        this.hasMenu = hasMenu;
-    }
-
     public Double getRating() {
         return rating;
     }
@@ -169,22 +141,6 @@ public class Venue {
         this.ratingSignals = ratingSignals;
     }
 
-    public Menu getMenu() {
-        return menu;
-    }
-
-    public void setMenu(Menu menu) {
-        this.menu = menu;
-    }
-
-    public Boolean getAllowMenuUrlEdit() {
-        return allowMenuUrlEdit;
-    }
-
-    public void setAllowMenuUrlEdit(Boolean allowMenuUrlEdit) {
-        this.allowMenuUrlEdit = allowMenuUrlEdit;
-    }
-
     public BeenHere getBeenHere() {
         return beenHere;
     }
@@ -201,12 +157,12 @@ public class Venue {
         this.hours = hours;
     }
 
-    public Photos getPhotos() {
-        return photos;
+    public String getStoreId() {
+        return storeId;
     }
 
-    public void setPhotos(Photos photos) {
-        this.photos = photos;
+    public void setStoreId(String storeId) {
+        this.storeId = storeId;
     }
 
     public HereNow getHereNow() {

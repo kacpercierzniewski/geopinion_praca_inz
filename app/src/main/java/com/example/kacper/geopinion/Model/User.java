@@ -12,15 +12,15 @@ public class User {
     @SerializedName("firstName")
     @Expose
     private String firstName;
-    @SerializedName("lastName")
-    @Expose
-    private String lastName;
     @SerializedName("gender")
     @Expose
     private String gender;
     @SerializedName("photo")
     @Expose
-    private Photo photo;
+    private Photo_ photo;
+    @SerializedName("type")
+    @Expose
+    private String type;
 
     public String getId() {
         return id;
@@ -38,14 +38,6 @@ public class User {
         this.firstName = firstName;
     }
 
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public String getGender() {
         return gender;
     }
@@ -54,12 +46,20 @@ public class User {
         this.gender = gender;
     }
 
-    public Photo getPhoto() {
+    public Photo_ getPhoto() {
         return photo;
     }
 
-    public void setPhoto(Photo photo) {
+    public void setPhoto(Photo_ photo) {
         this.photo = photo;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
 }

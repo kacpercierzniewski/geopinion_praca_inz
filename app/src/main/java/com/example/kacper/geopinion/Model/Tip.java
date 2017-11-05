@@ -18,6 +18,18 @@ public class Tip {
     @SerializedName("type")
     @Expose
     private String type;
+    @SerializedName("canonicalUrl")
+    @Expose
+    private String canonicalUrl;
+    @SerializedName("photo")
+    @Expose
+    private Photo photo;
+    @SerializedName("photourl")
+    @Expose
+    private String photourl;
+    @SerializedName("likes")
+    @Expose
+    private Likes likes;
     @SerializedName("logView")
     @Expose
     private Boolean logView;
@@ -32,7 +44,7 @@ public class Tip {
     private Todo todo;
     @SerializedName("user")
     @Expose
-    private User_ user;
+    private User user;
 
     public String getId() {
         return id;
@@ -64,6 +76,38 @@ public class Tip {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getCanonicalUrl() {
+        return canonicalUrl;
+    }
+
+    public void setCanonicalUrl(String canonicalUrl) {
+        this.canonicalUrl = canonicalUrl;
+    }
+
+    public Photo getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(Photo photo) {
+        this.photo = photo;
+    }
+
+    public String getPhotourl() {
+        return photourl;
+    }
+
+    public void setPhotourl(String photourl) {
+        this.photourl = photourl;
+    }
+
+    public Likes getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Likes likes) {
+        this.likes = likes;
     }
 
     public Boolean getLogView() {
@@ -98,11 +142,11 @@ public class Tip {
         this.todo = todo;
     }
 
-    public User_ getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(User_ user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
