@@ -6,7 +6,9 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Location {
-
+    @SerializedName("distance")
+    @Expose
+    private String distance;
     @SerializedName("address")
     @Expose
     private String address;
@@ -19,9 +21,9 @@ public class Location {
     @SerializedName("lng")
     @Expose
     private Double lng;
-    @SerializedName("distance")
+    @SerializedName("labeledLatLngs")
     @Expose
-    private Integer distance;
+    private List<LabeledLatLng> labeledLatLngs = null;
     @SerializedName("postalCode")
     @Expose
     private String postalCode;
@@ -73,12 +75,12 @@ public class Location {
         this.lng = lng;
     }
 
-    public Integer getDistance() {
-        return distance;
+    public List<LabeledLatLng> getLabeledLatLngs() {
+        return labeledLatLngs;
     }
 
-    public void setDistance(Integer distance) {
-        this.distance = distance;
+    public void setLabeledLatLngs(List<LabeledLatLng> labeledLatLngs) {
+        this.labeledLatLngs = labeledLatLngs;
     }
 
     public String getPostalCode() {
@@ -129,4 +131,11 @@ public class Location {
         this.formattedAddress = formattedAddress;
     }
 
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
+    }
 }

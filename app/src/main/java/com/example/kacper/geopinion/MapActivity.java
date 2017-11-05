@@ -4,10 +4,10 @@ import android.Manifest;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Camera;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -19,7 +19,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
+import com.example.kacper.geopinion.Model.FoursquareSearch;
+import com.example.kacper.geopinion.Model.Item;
+import com.example.kacper.geopinion.Model.Item_;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -29,18 +31,31 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import retrofit2.Call;
 
-import static android.content.Context.LOCATION_SERVICE;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class MapActivity extends AppCompatActivity
         implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+
     private LocationManager locationManager;
     private LocationListener locationListener;
     private Location myLocation= new Location(LOCATION_SERVICE);
-    Snackbar mySnackbar;
     private GoogleApiClient mGoogleApiClient;
     private GoogleMap map;
     private MapFragment mMapFragment = MapFragment.newInstance(); // stworzenie mapy
+    String Client_ID = "CWPUNU2P4XDRSU1ANMXKR2F4UXEDUY1AMOM1DNBGA0HVXORI";
+    String Client_Secret = "LL5SY2U5G2N0B4GXS244NUHJ43SSN3UCCQX1NP5NXF52HIPV";
+    String v = "20161010";
+    String geoLocation = "";
+    String radius="100000";
+    String limit="50";
+    String intent="global";
+    List<Item> item_list = new ArrayList<>();
+    LatLng venueLatLng;
 
     protected void onStart() {
         mGoogleApiClient.connect();
@@ -72,7 +87,8 @@ public class MapActivity extends AppCompatActivity
                     myLocation= new Location(LOCATION_SERVICE);
                     myLocation.set(location);
                     moveCameraToLocation();
-            }
+                    startSearchingForVenues();
+              }
 
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -135,6 +151,7 @@ public class MapActivity extends AppCompatActivity
             Log.i("LOCATION ","GRANTED!");
 
             moveCameraToLocation();
+            startSearchingForVenues();
         }
         else{
 
@@ -241,4 +258,70 @@ private void moveCameraToLocation(){
     map.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng,17));
 
 }
+    public class ExploreAsyncTask extends AsyncTask<Void, Void, List<Item>> {
+
+        public ExploreAsyncTask() {
+            super();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected List<Item> doInBackground(Void... voids) {
+            FoursquareIntegration foursquareIntegration = FoursquareIntegration.retrofit.create(FoursquareIntegration.class);
+            final Call<FoursquareSearch> call = foursquareIntegration.requestFoursquareModel(Client_ID, Client_Secret,geoLocation,intent,v,limit);
+
+            try {
+               FoursquareSearch explore =  call.execute().body();
+          //     FoursquareSearch explore2= call.execute().body();
+             //   Log.i("RESPONSE",String.valueOf(explore.getResponse().getGroups()));
+                Log.i("RESPONSE",String.valueOf(explore.getResponse().getGroups().get(0).getItems()));
+
+                  item_list = explore.getResponse().getGroups().get(0).getItems();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return item_list;
+        }
+
+        @Override
+        protected void onPostExecute(List<Item> item_s) {
+            super.onPostExecute(item_s);
+                for (int i = 0; i < item_s.size(); i++) {
+                    Log.i("VENUE " + i, String.valueOf(item_list.get(i).getVenue().getName()));
+                    Log.i("VENUE ID",String.valueOf(item_list.get(i).getVenue().getId()));
+                    Log.i("DISTANCE",String.valueOf(item_list.get(i).getVenue().getLocation().getDistance()));
+                    double lat = item_list.get(i).getVenue().getLocation().getLat();
+                    double lng = item_list.get(i).getVenue().getLocation().getLng();
+
+
+                    venueLatLng = new LatLng(lat, lng);
+                    map.addMarker(new MarkerOptions().position(venueLatLng).title("Marker in " + item_list.get(i).getVenue().getName()));
+
+
+
+                }
+
+        }
+
+    }
+
+    int getNumbersAfterComma(double a){
+        //if the number has two digits after the decimal point.
+        return (int)((a + 0.001) * 100) % 100;
+    }
+    void startSearchingForVenues(){
+    /*    double lat= Math.floor(myLocation.getLatitude())+ getNumbersAfterComma(myLocation.getLatitude())*0.006;
+        double lng= Math.floor(myLocation.getLongitude())+ getNumbersAfterComma(myLocation.getLongitude())*0.006;
+*/
+        geoLocation= myLocation.getLatitude()+","+myLocation.getLongitude();
+        Log.i("GEOLOCATION",myLocation.getLatitude()+","+myLocation.getLongitude());
+        ExploreAsyncTask exploreAsyncTask = new ExploreAsyncTask();
+        exploreAsyncTask.execute();
+
+    }
 }
+

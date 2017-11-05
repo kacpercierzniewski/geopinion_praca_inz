@@ -4,7 +4,7 @@ package com.example.kacper.geopinion.Model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class FoursquareModel {
+public class FoursquareSearch {
 
     @SerializedName("meta")
     @Expose

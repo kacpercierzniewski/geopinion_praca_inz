@@ -1,7 +1,6 @@
 package com.example.kacper.geopinion;
 
-import com.example.kacper.geopinion.Model.FoursquareModel;
-
+import com.example.kacper.geopinion.Model.FoursquareSearch;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -13,13 +12,16 @@ import retrofit2.http.Query;
  */
 
 public interface FoursquareIntegration {
-    @GET("venues/explore/")
-    Call<FoursquareModel> requestFoursquareModel(
+    @GET("venues/explore") //TODO: find way to use search instead of explore
+    Call<FoursquareSearch> requestFoursquareModel(
             @Query("client_id") String client_id,
             @Query("client_secret") String client_secret,
-            @Query("v") String v,
             @Query("ll") String ll,
-            @Query("query") String query);
+            @Query("intent") String intent,
+            @Query("v") String v,
+            @Query("limit") String limit
+
+    );
 
     Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("https://api.foursquare.com/v2/")

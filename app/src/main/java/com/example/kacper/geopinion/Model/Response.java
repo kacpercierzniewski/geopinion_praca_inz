@@ -7,85 +7,19 @@ import com.google.gson.annotations.SerializedName;
 
 public class Response {
 
-    @SerializedName("suggestedRadius")
+    @SerializedName("geocode")
     @Expose
-    private Integer suggestedRadius;
-    @SerializedName("headerLocation")
-    @Expose
-    private String headerLocation;
-    @SerializedName("headerFullLocation")
-    @Expose
-    private String headerFullLocation;
-    @SerializedName("headerLocationGranularity")
-    @Expose
-    private String headerLocationGranularity;
-    @SerializedName("query")
-    @Expose
-    private String query;
-    @SerializedName("totalResults")
-    @Expose
-    private Integer totalResults;
-    @SerializedName("suggestedBounds")
-    @Expose
-    private SuggestedBounds suggestedBounds;
+    private Geocode geocode;
     @SerializedName("groups")
     @Expose
     private List<Group> groups = null;
 
-    public Integer getSuggestedRadius() {
-        return suggestedRadius;
+    public Geocode getGeocode() {
+        return geocode;
     }
 
-    public void setSuggestedRadius(Integer suggestedRadius) {
-        this.suggestedRadius = suggestedRadius;
-    }
-
-    public String getHeaderLocation() {
-        return headerLocation;
-    }
-
-    public void setHeaderLocation(String headerLocation) {
-        this.headerLocation = headerLocation;
-    }
-
-    public String getHeaderFullLocation() {
-        return headerFullLocation;
-    }
-
-    public void setHeaderFullLocation(String headerFullLocation) {
-        this.headerFullLocation = headerFullLocation;
-    }
-
-    public String getHeaderLocationGranularity() {
-        return headerLocationGranularity;
-    }
-
-    public void setHeaderLocationGranularity(String headerLocationGranularity) {
-        this.headerLocationGranularity = headerLocationGranularity;
-    }
-
-    public String getQuery() {
-        return query;
-    }
-
-    public void setQuery(String query) {
-        this.query = query;
-    }
-
-    public Integer getTotalResults() {
-        return totalResults;
-    }
-
-    public void setTotalResults(Integer totalResults) {
-        this.totalResults = totalResults;
-    }
-
-    public SuggestedBounds getSuggestedBounds() {
-        return suggestedBounds;
-    }
-
-    public void setSuggestedBounds(SuggestedBounds suggestedBounds) {
-        this.suggestedBounds = suggestedBounds;
+    public void setGeocode(Geocode geocode) {
+        this.geocode = geocode;
     }
 
     public List<Group> getGroups() {

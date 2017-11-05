@@ -18,7 +18,7 @@ public class Group_ {
     private Integer count;
     @SerializedName("items")
     @Expose
-    private List<Item__> items = null;
+    private List<Object> items = null;
 
     public String getType() {
         return type;
@@ -44,11 +44,11 @@ public class Group_ {
         this.count = count;
     }
 
-    public List<Item__> getItems() {
+    public List<Object> getItems() {
         return items;
     }
 
-    public void setItems(List<Item__> items) {
+    public void setItems(List<Object> items) {
         this.items = items;
     }
 
