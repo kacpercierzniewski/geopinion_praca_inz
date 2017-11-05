@@ -1,0 +1,75 @@
+<application>
+  <component name="ProjectJdkTable">
+    <jdk version="2">
+      <name value="1.8" />
+      <type value="JavaSDK" />
+      <version value="java version &quot;1.8.0_144&quot;" />
+      <homePath value="/usr/lib/jvm/java-8-openjdk" />
+      <roots>
+        <annotationsPath>
+          <root type="composite">
+            <root type="simple" url="jar://$APPLICATION_HOME_DIR$/lib/jdkAnnotations.jar!/" />
+          </root>
+        </annotationsPath>
+        <classPath>
+          <root type="composite">
+            <root type="simple" url="jar:///usr/lib/jvm/java-8-openjdk/jre/lib/charsets.jar!/" />
+            <root type="simple" url="jar:///usr/lib/jvm/java-8-openjdk/jre/lib/ext/cldrdata.jar!/" />
+            <root type="simple" url="jar:///usr/lib/jvm/java-8-openjdk/jre/lib/ext/dnsns.jar!/" />
+            <root type="simple" url="jar:///usr/lib/jvm/java-8-openjdk/jre/lib/ext/jaccess.jar!/" />
+            <root type="simple" url="jar:///usr/lib/jvm/java-8-openjdk/jre/lib/ext/jfxrt.jar!/" />
+            <root type="simple" url="jar:///usr/lib/jvm/java-8-openjdk/jre/lib/ext/localedata.jar!/" />
+            <root type="simple" url="jar:///usr/lib/jvm/java-8-openjdk/jre/lib/ext/nashorn.jar!/" />
+            <root type="simple" url="jar:///usr/lib/jvm/java-8-openjdk/jre/lib/ext/sunec.jar!/" />
+            <root type="simple" url="jar:///usr/lib/jvm/java-8-openjdk/jre/lib/ext/sunjce_provider.jar!/" />
+            <root type="simple" url="jar:///usr/lib/jvm/java-8-openjdk/jre/lib/ext/sunpkcs11.jar!/" />
+            <root type="simple" url="jar:///usr/lib/jvm/java-8-openjdk/jre/lib/ext/zipfs.jar!/" />
+            <root type="simple" url="jar:///usr/lib/jvm/java-8-openjdk/jre/lib/jce.jar!/" />
+            <root type="simple" url="jar:///usr/lib/jvm/java-8-openjdk/jre/lib/jfxswt.jar!/" />
+            <root type="simple" url="jar:///usr/lib/jvm/java-8-openjdk/jre/lib/jsse.jar!/" />
+            <root type="simple" url="jar:///usr/lib/jvm/java-8-openjdk/jre/lib/management-agent.jar!/" />
+            <root type="simple" url="jar:///usr/lib/jvm/java-8-openjdk/jre/lib/resources.jar!/" />
+            <root type="simple" url="jar:///usr/lib/jvm/java-8-openjdk/jre/lib/rt.jar!/" />
+          </root>
+        </classPath>
+        <javadocPath>
+          <root type="composite">
+            <root type="simple" url="http://docs.oracle.com/javase/8/docs/api/" />
+          </root>
+        </javadocPath>
+        <sourcePath>
+          <root type="composite" />
+        </sourcePath>
+      </roots>
+      <additional />
+    </jdk>
+    <jdk version="2">
+      <name value="Android SDK" />
+      <type value="Android SDK" />
+      <version value="java version &quot;1.8.0_144&quot;" />
+      <homePath value="/run/media/kacper/64c35bcd-095a-43f1-9126-2600930506a4/Android/Sdk" />
+      <roots>
+        <annotationsPath>
+          <root type="composite">
+            <root type="simple" url="jar://$APPLICATION_HOME_DIR$/plugins/android/lib/androidAnnotations.jar!/" />
+          </root>
+        </annotationsPath>
+        <classPath>
+          <root type="composite">
+            <root type="simple" url="jar:///run/media/kacper/64c35bcd-095a-43f1-9126-2600930506a4/Android/Sdk/platforms/android-26/android.jar!/" />
+            <root type="simple" url="file:///run/media/kacper/64c35bcd-095a-43f1-9126-2600930506a4/Android/Sdk/platforms/android-26/data/res" />
+          </root>
+        </classPath>
+        <javadocPath>
+          <root type="composite" />
+        </javadocPath>
+        <sourcePath>
+          <root type="composite">
+            <root type="simple" url="file:///run/media/kacper/64c35bcd-095a-43f1-9126-2600930506a4/Android/Sdk/sources/android-26" />
+          </root>
+        </sourcePath>
+      </roots>
+      <additional jdk="1.8" sdk="android-26" />
+    </jdk>
+  </component>
+</application>
