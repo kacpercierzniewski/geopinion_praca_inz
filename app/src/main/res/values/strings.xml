@@ -124,4 +124,8 @@
     <string name="expressOpinion">Wystaw opinię</string>
     <string name="checkOpinion">Sprawdź opinie</string>
     <string name="myAccount">Moje konto</string>
+    <string name="tooFarAwayFromVenue">Nie możesz ocenić tego lokalu ponieważ jesteś za daleko!</string>
+    <string name="tooFarAway">Jesteś zbyt daleko</string>
+    <string name="title_activity_opinion">OpinionActivity</string>
+    <string name="sendOpinion">Wyślij Opinię</string>
 </resources>

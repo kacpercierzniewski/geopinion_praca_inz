@@ -25,15 +25,16 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile group: 'commons-validator', name: 'commons-validator', version: '1.4.0'
+
+// This is for
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support:design:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.google.android.gms:play-services-maps:11.0.4'
-    testCompile 'junit:junit:4.12'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     compile 'com.google.android.gms:play-services-location:11.0.4'
-
-// This is for
+    compile 'com.orhanobut:hawk:2.0.1'
+    testCompile 'junit:junit:4.12'
     provided 'org.glassfish:javax.annotation:10.0-b28'
 }

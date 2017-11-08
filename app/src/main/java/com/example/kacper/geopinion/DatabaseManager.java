@@ -13,7 +13,7 @@ import android.util.Log;
 
 class DatabaseManager extends SQLiteOpenHelper{
     private static final int DATABASE_VERSION=2;
-    private static final String DATABASE_NAME="geopinion.db";
+    private static final String DATABASE_NAME="geopinion";
     private static final String TABLE_NAME="users";
     private static final String COLUMN_ID="id";
     private static final String COLUMN_FNAME="fname";
@@ -70,7 +70,7 @@ class DatabaseManager extends SQLiteOpenHelper{
 
     }
     String searchPass(String u){
-        db =this.getReadableDatabase();
+            db =this.getReadableDatabase();
         String query= "select login, pass from "+TABLE_NAME;
         Cursor cursor= db.rawQuery(query,null);
         String login, pass;
@@ -94,6 +94,7 @@ class DatabaseManager extends SQLiteOpenHelper{
         db.close();
         return pass;
     }
+
 
 
 }

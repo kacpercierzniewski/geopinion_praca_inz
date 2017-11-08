@@ -13,7 +13,6 @@ public class MenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
         Bundle bundle = getIntent().getExtras();
-        Log.i("LOGIN",bundle.getString("login"));
     }
     public void onButtonClick(View v){
         if (v.getId()==R.id.Bmap){
