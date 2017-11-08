@@ -13,7 +13,8 @@ public class Response {
     @SerializedName("groups")
     @Expose
     private List<Group> groups = null;
-
+    @Expose
+    private List<Venue> venues = null;
     public Geocode getGeocode() {
         return geocode;
     }
@@ -30,4 +31,11 @@ public class Response {
         this.groups = groups;
     }
 
+    public List<Venue> getVenues() {
+        return venues;
+    }
+
+    public void setVenues(List<Venue> venues) {
+        this.venues = venues;
+    }
 }

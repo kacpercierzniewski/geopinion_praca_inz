@@ -12,7 +12,7 @@ import retrofit2.http.Query;
  */
 
 public interface FoursquareIntegration {
-    @GET("venues/explore") //TODO: find way to use search instead of explore
+    @GET("venues/search") //DONE : find way to use search instead of explore
     Call<FoursquareSearch> requestFoursquareModel(
             @Query("client_id") String client_id,
             @Query("client_secret") String client_secret,

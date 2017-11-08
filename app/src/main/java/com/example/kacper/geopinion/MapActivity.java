@@ -1,7 +1,7 @@
 package com.example.kacper.geopinion;
 
 import android.Manifest;
-import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -19,17 +19,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 import com.example.kacper.geopinion.Model.FoursquareSearch;
-import com.example.kacper.geopinion.Model.Item;
-import com.example.kacper.geopinion.Model.Item_;
+import com.example.kacper.geopinion.Model.Venue;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import retrofit2.Call;
 
@@ -39,7 +38,8 @@ import java.util.List;
 
 
 public class MapActivity extends AppCompatActivity
-        implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,GoogleMap.OnMarkerClickListener {
+    private List<Marker> markers = new ArrayList<>();
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -47,24 +47,24 @@ public class MapActivity extends AppCompatActivity
     private GoogleApiClient mGoogleApiClient;
     private GoogleMap map;
     private MapFragment mMapFragment = MapFragment.newInstance(); // stworzenie mapy
-    String Client_ID = "CWPUNU2P4XDRSU1ANMXKR2F4UXEDUY1AMOM1DNBGA0HVXORI";
-    String Client_Secret = "LL5SY2U5G2N0B4GXS244NUHJ43SSN3UCCQX1NP5NXF52HIPV";
-    String v = "20161010";
-    String geoLocation = "";
-    String radius="100000";
-    String limit="50";
-    String intent="global";
-    List<Item> item_list = new ArrayList<>();
-    LatLng venueLatLng;
+    private String geoLocation = "";
+    private List<Venue> item_list = new ArrayList<>();
+    private boolean venueFound=false;
+    private boolean cameraIsSet=false;
+    private int index;
+    private Button button;
 
     protected void onStart() {
         mGoogleApiClient.connect();
         super.onStart();
+        Log.i("Method:","ONSTART");
     }
 
     protected void onStop() {
         mGoogleApiClient.disconnect();
         super.onStop();
+        Log.i("Method:","onStop");
+
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +77,7 @@ public class MapActivity extends AppCompatActivity
                     .addApi(LocationServices.API)
                     .build();
         }
-
+    button=(Button)(findViewById(R.id.expressOpinionButton));
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
             @Override
@@ -119,19 +119,20 @@ public class MapActivity extends AppCompatActivity
                 requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET}, 10);
                 return;
             } else {
-                locationManager.requestLocationUpdates("gps", 1000, 10, locationListener);
+                locationManager.requestLocationUpdates("gps", 1000, 20, locationListener);
 
             }
         }
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.map_container, mMapFragment);
-        fragmentTransaction.commit();
-        mMapFragment.getMapAsync(this);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
 
     }
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        Log.i("Method:","onConnected");
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.i("NO PERMISSIONS","!");
 
@@ -172,6 +173,7 @@ public class MapActivity extends AppCompatActivity
 
     }
 
+    
     @Override
     public void onMapReady(GoogleMap googleMap) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -179,7 +181,7 @@ public class MapActivity extends AppCompatActivity
             googleMap.setMyLocationEnabled(true);
 
             map=googleMap;
-
+            map.setOnMarkerClickListener(this);
             //        myLocation=googleMap.getMyLocation();
 
         } else {
@@ -196,37 +198,137 @@ public class MapActivity extends AppCompatActivity
 
 
     public void onButtonClick(View view) {
-        getLocationButton();
-        Log.i("LOCATION:", String.valueOf(myLocation.getLongitude()) + String.valueOf(myLocation.getLatitude()));
-
+       startOpinionActivity(index);
 
     }
 
-
-
-    private void getLocationButton() {
-        locationManager.requestLocationUpdates("gps", 1000, 10, locationListener);
-
-    }
 
 
 
 
     @Override
     public void onConnectionSuspended(int i) {
+        Log.i("Method:","onConnectionSuspended");
 
     }
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
-            moveCameraToLocation();
+        Log.i("Method:","onPointerCaptureChanged");
+
+        moveCameraToLocation();
+            startSearchingForVenues();
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.i("Method:","onConnectionFailed");
 
     }
 
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        for (int i=0;i<markers.size();i++){
+        if (marker.equals(markers.get(i))) {
+
+                if (Integer.valueOf(item_list.get(i).getLocation().getDistance())<1000){
+
+                    Log.i("INFO: ","MARKER "+ item_list.get(i).getName());
+                    Log.i("BUTTON ENABLED: ",String.valueOf(button.isEnabled()));
+                    button.setEnabled(true);
+                    Log.i("BUTTON ENABLED: ",String.valueOf(button.isEnabled()));
+
+                    button.setText(String.format("Oceń lokal- %s", item_list.get(i).getName()));
+                    index=i;
+            }
+                else {
+                    makeToast(getString(R.string.tooFarAwayFromVenue));
+                    button.setText(getString(R.string.tooFarAway));
+                    button.setEnabled(false);
+
+                }}
+
+        }
+
+        return false;
+    }
+
+
+    private void  makeProviderDisabledSnackbar(){
+        Snackbar mySnackbar= Snackbar.make(findViewById(R.id.map), "Aplikacja wymaga włączenia lokalizacji",Snackbar.LENGTH_INDEFINITE);
+        mySnackbar.setAction("OK",new CheckLocationListener());
+        mySnackbar.show();
+
+    }
+    private void makeProviderEnabledSnackbar(){
+
+        Snackbar mySnackbar= Snackbar.make(findViewById(R.id.map), "Lokalizacja włączona",Snackbar.LENGTH_SHORT);
+        mySnackbar.show();
+
+    }
+private void moveCameraToLocation(){
+        if(!cameraIsSet) {
+            LatLng location = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+            Log.i("LOCATION", String.valueOf(location));
+            LatLng latlng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 17));
+            cameraIsSet=true;
+        }
+}
+    public class ExploreAsyncTask extends AsyncTask<Void, Void, List<Venue>> {
+
+        public ExploreAsyncTask() {
+            super();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected List<Venue> doInBackground(Void... voids) {
+            FoursquareIntegration foursquareIntegration = FoursquareIntegration.retrofit.create(FoursquareIntegration.class);
+            String client_ID = "CWPUNU2P4XDRSU1ANMXKR2F4UXEDUY1AMOM1DNBGA0HVXORI";
+            String client_Secret = "LL5SY2U5G2N0B4GXS244NUHJ43SSN3UCCQX1NP5NXF52HIPV";
+            String v = "20171103";
+
+             String limit="50";
+             String intent="checkin";
+            final Call<FoursquareSearch> call = foursquareIntegration.requestFoursquareModel(client_ID, client_Secret,geoLocation,intent, v,limit);
+
+            try {
+               FoursquareSearch explore =  call.execute().body();
+          //     FoursquareSearch explore2= call.execute().body();
+             //   Log.i("RESPONSE",String.valueOf(explore.getResponse().getGroups()));
+//                Log.i("RESPONSE",String.valueOf(explore.getResponse().getGroups().get(0).getItems()));
+
+                  item_list = explore.getResponse().getVenues();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return item_list;
+        }
+
+        @Override
+        protected void onPostExecute(List<Venue> item_s) {
+            super.onPostExecute(item_s);
+                for (int i = 0; i < item_s.size(); i++) {
+                    Log.i("VENUE " + i, String.valueOf(item_list.get(i).getName()));
+                    Log.i("VENUE ID",String.valueOf(item_list.get(i).getId()));
+                    Log.i("DISTANCE",String.valueOf(item_list.get(i).getLocation().getDistance()));
+                    double lat = item_list.get(i).getLocation().getLat();
+                    double lng = item_list.get(i).getLocation().getLng();
+                    LatLng venueLatLng = new LatLng(lat, lng);
+                    Marker marker = map.addMarker(new MarkerOptions().position(venueLatLng).title("Marker in " + item_list.get(i).getName())); //...
+                    markers.add(marker);
+
+                }
+                Log.i("MARKER:" ,markers.get(1).getTitle());
+
+        }
+
+    }
     public class CheckLocationListener implements View.OnClickListener{
 
         @Override
@@ -239,89 +341,35 @@ public class MapActivity extends AppCompatActivity
         }
 
     }
-    private void  makeProviderDisabledSnackbar(){
-        Snackbar mySnackbar= Snackbar.make(findViewById(R.id.map_container), "Aplikacja wymaga włączenia lokalizacji",Snackbar.LENGTH_INDEFINITE);
-        mySnackbar.setAction("OK",new CheckLocationListener());
-        mySnackbar.show();
+
+    private void startSearchingForVenues(){
+        Log.i("venueFound BEFORE:",String.valueOf(venueFound));
+
+         if (!venueFound) {
+            geoLocation = myLocation.getLatitude() + "," + myLocation.getLongitude();
+            Log.i("GEOLOCATION", myLocation.getLatitude() + "," + myLocation.getLongitude());
+            ExploreAsyncTask exploreAsyncTask = new ExploreAsyncTask();
+            exploreAsyncTask.execute();
+            venueFound=true;
+
+         }
+        Log.i("venueFound:",String.valueOf(venueFound));
 
     }
-    private void makeProviderEnabledSnackbar(){
 
-        Snackbar mySnackbar= Snackbar.make(findViewById(R.id.map_container), "Lokalizacja włączona",Snackbar.LENGTH_SHORT);
-        mySnackbar.show();
+    private void makeToast(String text){
+        Context context = getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
 
     }
-private void moveCameraToLocation(){
-    LatLng location= new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
-    Log.i("LOCATION",String.valueOf(location));
-    LatLng latlng= new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
-    map.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng,17));
+    private void startOpinionActivity(int index){
+        Intent intent = new Intent(this,OpinionActivity.class);
+        intent.putExtra("venue_id",item_list.get(index).getId());
+        intent.putExtra("venue_name",item_list.get(index).getName());
+        startActivity(intent);
 
-}
-    public class ExploreAsyncTask extends AsyncTask<Void, Void, List<Item>> {
-
-        public ExploreAsyncTask() {
-            super();
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected List<Item> doInBackground(Void... voids) {
-            FoursquareIntegration foursquareIntegration = FoursquareIntegration.retrofit.create(FoursquareIntegration.class);
-            final Call<FoursquareSearch> call = foursquareIntegration.requestFoursquareModel(Client_ID, Client_Secret,geoLocation,intent,v,limit);
-
-            try {
-               FoursquareSearch explore =  call.execute().body();
-          //     FoursquareSearch explore2= call.execute().body();
-             //   Log.i("RESPONSE",String.valueOf(explore.getResponse().getGroups()));
-                Log.i("RESPONSE",String.valueOf(explore.getResponse().getGroups().get(0).getItems()));
-
-                  item_list = explore.getResponse().getGroups().get(0).getItems();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-            return item_list;
-        }
-
-        @Override
-        protected void onPostExecute(List<Item> item_s) {
-            super.onPostExecute(item_s);
-                for (int i = 0; i < item_s.size(); i++) {
-                    Log.i("VENUE " + i, String.valueOf(item_list.get(i).getVenue().getName()));
-                    Log.i("VENUE ID",String.valueOf(item_list.get(i).getVenue().getId()));
-                    Log.i("DISTANCE",String.valueOf(item_list.get(i).getVenue().getLocation().getDistance()));
-                    double lat = item_list.get(i).getVenue().getLocation().getLat();
-                    double lng = item_list.get(i).getVenue().getLocation().getLng();
-
-
-                    venueLatLng = new LatLng(lat, lng);
-                    map.addMarker(new MarkerOptions().position(venueLatLng).title("Marker in " + item_list.get(i).getVenue().getName()));
-
-
-
-                }
-
-        }
-
-    }
-
-    int getNumbersAfterComma(double a){
-        //if the number has two digits after the decimal point.
-        return (int)((a + 0.001) * 100) % 100;
-    }
-    void startSearchingForVenues(){
-    /*    double lat= Math.floor(myLocation.getLatitude())+ getNumbersAfterComma(myLocation.getLatitude())*0.006;
-        double lng= Math.floor(myLocation.getLongitude())+ getNumbersAfterComma(myLocation.getLongitude())*0.006;
-*/
-        geoLocation= myLocation.getLatitude()+","+myLocation.getLongitude();
-        Log.i("GEOLOCATION",myLocation.getLatitude()+","+myLocation.getLongitude());
-        ExploreAsyncTask exploreAsyncTask = new ExploreAsyncTask();
-        exploreAsyncTask.execute();
-
-    }
 }
 

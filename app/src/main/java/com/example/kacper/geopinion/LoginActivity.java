@@ -1,11 +1,14 @@
 package com.example.kacper.geopinion;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import com.orhanobut.hawk.Hawk;
 
 public class LoginActivity extends AppCompatActivity {
 private DatabaseManager manager= new DatabaseManager(this);
@@ -33,8 +36,9 @@ private DatabaseManager manager= new DatabaseManager(this);
 
             if (passStr.equals(password)){
                 Log.i("SUCCESS","hasło się zgadza");
+                Hawk.init(getApplicationContext()).build();
+                Hawk.put("login",loginStr);
                 Intent mainActivity = new Intent(this, MenuActivity.class);
-                mainActivity.putExtra("login",loginStr);
                 startActivity(mainActivity);
 
             }

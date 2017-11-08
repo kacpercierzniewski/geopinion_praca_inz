@@ -1,45 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.example.kacper.geopinion">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.example.kacper.geopinion">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.READ_PROFILE"/>
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality. 
     -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <application
-            android:allowBackup="true"
-            android:fullBackupContent="@xml/backup_descriptor"
-            android:icon="@mipmap/ic_launcher"
-            android:label="@string/app_name"
-            android:roundIcon="@mipmap/ic_launcher_round"
-            android:supportsRtl="true"
-            android:theme="@style/AppTheme">
+    <application android:allowBackup="true" android:fullBackupContent="@xml/backup_descriptor"
+        android:icon="@mipmap/ic_launcher" android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round" android:supportsRtl="true" android:theme="@style/AppTheme">
         <activity android:name=".LoginActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
 
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                        android:host="www.bitbucket.org"
-                        android:pathPrefix="/Pelek_Wizjoner"
-                        android:scheme="http"/>
+                <data android:host="www.bitbucket.org" android:pathPrefix="/Pelek_Wizjoner" android:scheme="http" />
             </intent-filter>
         </activity>
-        <activity android:name=".RegisterActivity"/>
-        <activity android:name=".MenuActivity"/>
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".MenuActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -48,18 +39,15 @@
              sign the APK for publishing.
              You can define the keys for the debug and release targets in src/debug/ and src/release/. 
         -->
-        <meta-data
-                android:name="com.google.android.geo.API_KEY"
-                android:value="@string/google_maps_key"/>
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/google_maps_key" />
 
-        <activity
-                android:name=".MapsActivity"
-                android:label="@string/title_activity_maps">
-            <meta-data
-                    android:name="android.support.PARENT_ACTIVITY"
-                    android:value="com.example.kacper.geopinion.MenuActivity"/>
+        <activity android:name=".MapsActivity" android:label="@string/title_activity_maps">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.kacper.geopinion.MenuActivity" />
         </activity>
-        <activity android:name=".MapActivity" />
+        <activity android:name=".MapActivity" android:screenOrientation="portrait" />
+        <activity android:name=".OpinionActivity" android:label="@string/title_activity_opinion"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
