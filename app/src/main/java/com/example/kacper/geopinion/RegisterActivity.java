@@ -59,7 +59,7 @@ public class RegisterActivity extends AppCompatActivity {
             User user= new User(fName.getText().toString(),lName.getText().toString(),login.getText().toString(),pass.getText().toString(),email.getText().toString(),settings);
             manager.putUserToDB(user);
             Log.i("INFO","reg success");
-            Intent myIntent= new Intent(this, LoginActivity.class);
+            Intent myIntent= new Intent(this, MainActivity.class);
             startActivity(myIntent);
 
             //wkładamy dane do bazy
