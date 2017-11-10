@@ -1,8 +1,6 @@
 package com.example.kacper.geopinion;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,7 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 import com.orhanobut.hawk.Hawk;
 
-public class LoginActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 private DatabaseManager manager= new DatabaseManager(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,12 +27,10 @@ private DatabaseManager manager= new DatabaseManager(this);
             EditText pass= (EditText)findViewById(R.id.TFpass);
             String passStr= pass.getText().toString();
 
-            String password= manager.searchPass(loginStr); //sprawdzamy jakie mamy hasło dla danego loginu
 
-            Log.i("VARIABLE: password",password);
             Log.i("VARIABLE: passStr",passStr);
 
-            if (passStr.equals(password)){
+            if (manager.checkPass(loginStr,passStr)){
                 Log.i("SUCCESS","hasło się zgadza");
                 Hawk.init(getApplicationContext()).build();
                 Hawk.put("login",loginStr);

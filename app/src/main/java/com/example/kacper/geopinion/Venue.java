@@ -22,7 +22,7 @@ public class Venue {
     private String venue_id;
     private float average_stars;
     private float sum_stars;
-    Venue(String venue_id, float average_stars, float sum_stars,String opinion){
+    Venue(String venue_id, float average_stars, float sum_stars){
         this.venue_id=venue_id;
         this.average_stars=average_stars;
         this.sum_stars=sum_stars;

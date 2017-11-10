@@ -87,6 +87,8 @@ public class MapActivity extends AppCompatActivity
                     myLocation= new Location(LOCATION_SERVICE);
                     myLocation.set(location);
                     moveCameraToLocation();
+                    Log.i("ACCURACY:",String.valueOf(location.getAccuracy()));
+                    if (myLocation.getAccuracy()<25)
                     startSearchingForVenues();
               }
 
@@ -119,8 +121,8 @@ public class MapActivity extends AppCompatActivity
                 requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET}, 10);
                 return;
             } else {
-                locationManager.requestLocationUpdates("gps", 1000, 20, locationListener);
-
+                locationManager.requestLocationUpdates("gps", 1000, 10, locationListener);
+                locationManager.getLastKnownLocation("gps");
             }
         }
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -152,7 +154,8 @@ public class MapActivity extends AppCompatActivity
             Log.i("LOCATION ","GRANTED!");
 
             moveCameraToLocation();
-            startSearchingForVenues();
+            if (myLocation.getAccuracy()<25)
+                startSearchingForVenues();
         }
         else{
 
@@ -343,6 +346,7 @@ private void moveCameraToLocation(){
     }
 
     private void startSearchingForVenues(){
+    Log.i("METHOD: ","startSearchingForVenues");
         Log.i("venueFound BEFORE:",String.valueOf(venueFound));
 
          if (!venueFound) {
@@ -353,7 +357,7 @@ private void moveCameraToLocation(){
             venueFound=true;
 
          }
-        Log.i("venueFound:",String.valueOf(venueFound));
+        Log.i("venueFound:",String.valueOf( venueFound));
 
     }
 
@@ -366,8 +370,6 @@ private void moveCameraToLocation(){
     }
     private void startOpinionActivity(int index){
         Intent intent = new Intent(this,OpinionActivity.class);
-        intent.putExtra("venue_id",item_list.get(index).getId());
-        intent.putExtra("venue_name",item_list.get(index).getName());
         startActivity(intent);
 
             }

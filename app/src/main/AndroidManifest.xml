@@ -16,17 +16,11 @@
     <application android:allowBackup="true" android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher" android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round" android:supportsRtl="true" android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity">
+        <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:host="www.bitbucket.org" android:pathPrefix="/Pelek_Wizjoner" android:scheme="http" />
             </intent-filter>
         </activity>
         <activity android:name=".RegisterActivity" />
@@ -41,13 +35,10 @@
         -->
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/google_maps_key" />
 
-        <activity android:name=".MapsActivity" android:label="@string/title_activity_maps">
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.kacper.geopinion.MenuActivity" />
-        </activity>
         <activity android:name=".MapActivity" android:screenOrientation="portrait" />
         <activity android:name=".OpinionActivity" android:label="@string/title_activity_opinion"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".CheckOpinionActivity"></activity>
     </application>
 
 </manifest>
