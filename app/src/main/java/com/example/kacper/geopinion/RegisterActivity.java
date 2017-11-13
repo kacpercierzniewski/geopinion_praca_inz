@@ -1,5 +1,6 @@
 package com.example.kacper.geopinion;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import java.util.regex.Pattern;
@@ -22,6 +24,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
         public void onSignUpButtonClick(View view) {
+        error=false;
         String settings= "0";
         TextView errorText= (TextView)findViewById(R.id.TVerror);
         errorText.setText(""); //czyścimy tekst po ponownym kliknięciu przycisku
@@ -54,7 +57,9 @@ public class RegisterActivity extends AppCompatActivity {
             email.setError(getString(R.string.emailExists));
             error=true;
         }
+
         if (!error){
+            makeToast(getString(R.string.accountCreated));
             Log.i("INFO","no errors");
             User user= new User(fName.getText().toString(),lName.getText().toString(),login.getText().toString(),pass.getText().toString(),email.getText().toString(),settings);
             manager.putUserToDB(user);
@@ -87,12 +92,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
 
         }
-        void checkLettersForLogin(EditText et){
 
-
-
-
-        }
         private void checkNoInputError(EditText textField) {
             if (textField.getText().toString().equals("")) {
                 textField.setError("Pole nie może być puste.");
@@ -125,6 +125,12 @@ public class RegisterActivity extends AppCompatActivity {
 
 
         }
+    private void makeToast(String text){
+        Context context = getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
 
+    }
         }
 

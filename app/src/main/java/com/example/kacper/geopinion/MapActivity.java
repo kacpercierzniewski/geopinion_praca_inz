@@ -11,7 +11,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -21,15 +20,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import com.example.kacper.geopinion.Model.Category;
 import com.example.kacper.geopinion.Model.FoursquareSearch;
 import com.example.kacper.geopinion.Model.Venue;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.orhanobut.hawk.Hawk;
 import retrofit2.Call;
 
 import java.io.IOException;
@@ -38,45 +36,33 @@ import java.util.List;
 
 
 public class MapActivity extends AppCompatActivity
-        implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,GoogleMap.OnMarkerClickListener {
+        implements OnMapReadyCallback,GoogleMap.OnMarkerClickListener {
     private List<Marker> markers = new ArrayList<>();
 
     private LocationManager locationManager;
     private LocationListener locationListener;
     private Location myLocation= new Location(LOCATION_SERVICE);
-    private GoogleApiClient mGoogleApiClient;
     private GoogleMap map;
-    private MapFragment mMapFragment = MapFragment.newInstance(); // stworzenie mapy
     private String geoLocation = "";
     private List<Venue> item_list = new ArrayList<>();
     private boolean venueFound=false;
     private boolean cameraIsSet=false;
     private int index;
+    private boolean locationEstablished =false;
+    private boolean snackBarHidden=false;
     private Button button;
 
-    protected void onStart() {
-        mGoogleApiClient.connect();
-        super.onStart();
-        Log.i("Method:","ONSTART");
-    }
 
-    protected void onStop() {
-        mGoogleApiClient.disconnect();
-        super.onStop();
-        Log.i("Method:","onStop");
-
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
-        }
+     //   if (mGoogleApiClient == null) {
+   //         mGoogleApiClient = new GoogleApiClient.Builder(this)
+  // //                 .addConnectionCallbacks(this)
+  //                  .addOnConnectionFailedListener(this)//                 .addApi(LocationServices.API)
+   //                 .build();
+        //}
     button=(Button)(findViewById(R.id.expressOpinionButton));
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
@@ -84,17 +70,38 @@ public class MapActivity extends AppCompatActivity
             public void onLocationChanged(Location location) {
                 Log.i("LOCATION CHANGED","!");
 
-                    myLocation= new Location(LOCATION_SERVICE);
-                    myLocation.set(location);
-                    moveCameraToLocation();
-                    Log.i("ACCURACY:",String.valueOf(location.getAccuracy()));
-                    if (myLocation.getAccuracy()<25)
-                    startSearchingForVenues();
+                   Log.i("ACCURACY:",String.valueOf(location.getAccuracy()));
+                   if (location.getAccuracy()<50) {
+                       Log.i("ACCURACY GRANTED!","");
+                       myLocation= new Location(LOCATION_SERVICE);
+                       myLocation.set(location);
+                       moveCameraToLocation();
+                       locationManager.removeUpdates(locationListener);
+                       if (!locationEstablished){
+                           locationManager.requestLocationUpdates("gps", 2000, 20, locationListener);
+                           locationEstablished =true;
+                           Snackbar mySnackbar= Snackbar.make(findViewById(R.id.map), "Lokalizacja ustalona!",Snackbar.LENGTH_SHORT);
+                           mySnackbar.show();
+                       }
+
+                       startSearchingForVenues();
+                       snackBarHidden=false;
+                   }
+                   else
+                   {
+                       locationManager.removeUpdates(locationListener);
+                       locationManager.requestLocationUpdates("gps", 2000, 1, locationListener);
+                       if (!snackBarHidden) {
+                           Snackbar mySnackbar = Snackbar.make(findViewById(R.id.map), "Ustalam dokładną lokalizację...", Snackbar.LENGTH_INDEFINITE);
+                           mySnackbar.show();
+                           snackBarHidden=true;
+                       }
+                       locationEstablished =false;
+                   }
               }
 
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
-
             }
 
             @Override
@@ -119,11 +126,18 @@ public class MapActivity extends AppCompatActivity
                 // for ActivityCompat#requestPermissions for more details.
 
                 requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET}, 10);
+                makeProviderDisabledSnackbar();
                 return;
             } else {
-                locationManager.requestLocationUpdates("gps", 1000, 10, locationListener);
-                locationManager.getLastKnownLocation("gps");
-            }
+                myLocation=locationManager.getLastKnownLocation("gps");
+                if (myLocation!=null && myLocation.getAccuracy()<50){
+                    startSearchingForVenues();
+
+                }
+                else{
+                    locationManager.requestLocationUpdates("gps",100,1,locationListener);
+                }
+                    }
         }
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -131,40 +145,9 @@ public class MapActivity extends AppCompatActivity
 
 
     }
+
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        Log.i("Method:","onConnected");
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.i("NO PERMISSIONS","!");
-
-            /// / TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        myLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-
-        if (myLocation != null) {
-            Log.i("LOCATION ","GRANTED!");
-
-            moveCameraToLocation();
-            if (myLocation.getAccuracy()<25)
-                startSearchingForVenues();
-        }
-        else{
-
-            Log.i("NO LAST KNOW  LOCATION","!");
-
-        }
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
 
             case 10:
@@ -185,11 +168,11 @@ public class MapActivity extends AppCompatActivity
 
             map=googleMap;
             map.setOnMarkerClickListener(this);
-            //        myLocation=googleMap.getMyLocation();
-
+            if (myLocation!=null)
+            moveCameraToLocation();
         } else {
             Log.i("ERROR","NO PERRMISIONS");
-            // Show rationale and request permission.
+            makeProviderDisabledSnackbar();
         }
         // Add a marker in Sydney, Australia,
         // and move the map's camera to the same location.
@@ -201,14 +184,62 @@ public class MapActivity extends AppCompatActivity
 
 
     public void onButtonClick(View view) {
-       startOpinionActivity(index);
+        startOpinionActivity(index);
 
     }
 
 
 
+/*
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Log.i("Method:","onConnected");
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.i("NO PERMISSIONS","!");
+            makeProviderDisabledSnackbar();
 
+            /// / TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        myLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+
+        if (myLocation != null) {
+            Log.i("LOCATION ","GRANTED!");
+            moveCameraToLocation();
+            if (myLocation.getAccuracy()<50)
+                startSearchingForVenues();
+            else
+            {
+                locationManager.requestLocationUpdates("gps",1000,1,locationListener);
+            }
+
+        }
+        else{
+
+            Log.i("NO LAST KNOW  LOCATION","!");
+
+        }
+    }
+    protected void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
+        Log.i("Method:","ONSTART");
+    }
+
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
+        Log.i("Method:","onStop");
+
+    }
     @Override
     public void onConnectionSuspended(int i) {
         Log.i("Method:","onConnectionSuspended");
@@ -227,14 +258,14 @@ public class MapActivity extends AppCompatActivity
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.i("Method:","onConnectionFailed");
 
-    }
+    }*/
 
     @Override
     public boolean onMarkerClick(Marker marker) {
         for (int i=0;i<markers.size();i++){
         if (marker.equals(markers.get(i))) {
 
-                if (Integer.valueOf(item_list.get(i).getLocation().getDistance())<1000){
+                if (Integer.valueOf(item_list.get(i).getLocation().getDistance())<10000){
 
                     Log.i("INFO: ","MARKER "+ item_list.get(i).getName());
                     Log.i("BUTTON ENABLED: ",String.valueOf(button.isEnabled()));
@@ -278,9 +309,14 @@ private void moveCameraToLocation(){
             cameraIsSet=true;
         }
 }
+
+
+
+
+
     public class ExploreAsyncTask extends AsyncTask<Void, Void, List<Venue>> {
 
-        public ExploreAsyncTask() {
+        ExploreAsyncTask() {
             super();
         }
 
@@ -317,17 +353,14 @@ private void moveCameraToLocation(){
         protected void onPostExecute(List<Venue> item_s) {
             super.onPostExecute(item_s);
                 for (int i = 0; i < item_s.size(); i++) {
-                    Log.i("VENUE " + i, String.valueOf(item_list.get(i).getName()));
-                    Log.i("VENUE ID",String.valueOf(item_list.get(i).getId()));
-                    Log.i("DISTANCE",String.valueOf(item_list.get(i).getLocation().getDistance()));
-                    double lat = item_list.get(i).getLocation().getLat();
+                     double lat = item_list.get(i).getLocation().getLat();
                     double lng = item_list.get(i).getLocation().getLng();
                     LatLng venueLatLng = new LatLng(lat, lng);
                     Marker marker = map.addMarker(new MarkerOptions().position(venueLatLng).title("Marker in " + item_list.get(i).getName())); //...
                     markers.add(marker);
 
                 }
-                Log.i("MARKER:" ,markers.get(1).getTitle());
+            //    Log.i("MARKER:" ,markers.get(1).getTitle());
 
         }
 
@@ -347,17 +380,14 @@ private void moveCameraToLocation(){
 
     private void startSearchingForVenues(){
     Log.i("METHOD: ","startSearchingForVenues");
-        Log.i("venueFound BEFORE:",String.valueOf(venueFound));
 
          if (!venueFound) {
             geoLocation = myLocation.getLatitude() + "," + myLocation.getLongitude();
-            Log.i("GEOLOCATION", myLocation.getLatitude() + "," + myLocation.getLongitude());
             ExploreAsyncTask exploreAsyncTask = new ExploreAsyncTask();
             exploreAsyncTask.execute();
             venueFound=true;
 
          }
-        Log.i("venueFound:",String.valueOf( venueFound));
 
     }
 
@@ -369,7 +399,21 @@ private void moveCameraToLocation(){
 
     }
     private void startOpinionActivity(int index){
-        Intent intent = new Intent(this,OpinionActivity.class);
+        Hawk.put("venue_id",item_list.get(index).getId());
+        Hawk.put("venue_name",item_list.get(index).getName());
+        List<Category> venue_category= item_list.get(index).getCategories();
+        StringBuilder categoryString = new StringBuilder();
+        for (int i=0;i<venue_category.size();i++){
+            if(i==venue_category.size()-1){
+                categoryString.append(venue_category.get(i).getName());
+            }
+            else
+                categoryString.append(venue_category.get(i).getName()).append(", ");
+
+        }
+        Hawk.put("venue_category", categoryString.toString());
+ //       Hawk.put("venue_photo_url",item_list.get(index).getTip().getPhotourl());
+        Intent intent = new Intent(this,ExpressOpinionActivity.class);
         startActivity(intent);
 
             }

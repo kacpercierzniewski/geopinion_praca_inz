@@ -5,8 +5,10 @@ package com.example.kacper.geopinion;
  */
 
 public class Opinion {
-    int id;
-    public int getUser_id() {
+
+
+
+    int getUser_id() {
         return user_id;
     }
 
@@ -14,7 +16,7 @@ public class Opinion {
         this.user_id = user_id;
     }
 
-    public String getVenue_id() {
+    String getVenue_id() {
         return venue_id;
     }
 
@@ -30,20 +32,20 @@ public class Opinion {
         this.text = text;
     }
 
-    public int getStars() {
+    float getStars() {
         return stars;
     }
 
-    public void setStars(int stars) {
+    public void setStars(float stars) {
         this.stars = stars;
     }
 
     private int user_id;
     private String venue_id;
     private String text;
-    private int stars;
+    private float stars;
 
-    public Opinion(int user_id,String venue_id, String text, int stars){
+    Opinion(int user_id, String venue_id, String text, float stars){
         this.user_id=user_id;
         this.venue_id=venue_id;
         this.text=text;
