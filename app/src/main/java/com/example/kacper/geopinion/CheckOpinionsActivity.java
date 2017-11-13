@@ -14,6 +14,7 @@ private DatabaseManager manager= new DatabaseManager(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_opinions);
         String venue_id=Hawk.get("venue_id");
