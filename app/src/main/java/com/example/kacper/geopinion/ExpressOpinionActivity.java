@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,10 +51,11 @@ public class ExpressOpinionActivity extends AppCompatActivity {
                 makeToast("Opinia wystawiona pomyślnie!");
                 db.putOpinionToDB(opinion);
                 db.putVenueToDBIfPossible(venue, opinion);
+
                 this.finish();
 
 
-            } else {
+               } else {
                 makeToast(getString(R.string.opinionExists));
             }
         }

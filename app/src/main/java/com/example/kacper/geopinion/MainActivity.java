@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("SUCCESS","hasło się zgadza");
                 Hawk.init(getApplicationContext()).build();
                 Hawk.put("login",loginStr);
+                Hawk.put("user_id",manager.getUserId(loginStr));
                 Intent mainActivity = new Intent(this, MenuActivity.class);
                 startActivity(mainActivity);
 
