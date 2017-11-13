@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.View;
 
 public class MenuActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,7 +17,11 @@ public class MenuActivity extends AppCompatActivity {
         if (v.getId()==R.id.Bmap){
             Intent intent = new Intent(this,MapActivity.class);
             startActivity(intent);
-
+        }
+        if (v.getId()==R.id.Bopinions){
+            Log.i("ACTIVITY STARTED","!");
+            Intent intent = new Intent(this,CheckOpinionsActivity.class);
+            startActivity(intent);
 
         }
 

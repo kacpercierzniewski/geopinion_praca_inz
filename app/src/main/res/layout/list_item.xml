@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView android:layout_margin="@dimen/activity_horizontal_margin" android:layout_width="match_parent"
+        android:layout_height="wrap_content"    android:clickable="true" >
+
+        <LinearLayout android:layout_margin="@dimen/activity_horizontal_margin" android:id="@+id/list_item" android:onClick="onButtonClick" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:orientation="vertical"
+      >
+
+            <TextView android:id="@+id/textViewHead" android:text="Heading" android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
+            <RatingBar android:layout_width="284dp" android:layout_height="wrap_content" android:id="@+id/ratingBar2"
+                android:isIndicator="true" android:numStars="6" />
+            <TextView android:id="@+id/textViewDesc" android:text="Kategorie: " android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+</LinearLayout>

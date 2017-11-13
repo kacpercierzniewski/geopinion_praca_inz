@@ -1,15 +1,17 @@
 package com.example.kacper.geopinion;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 import com.orhanobut.hawk.Hawk;
 
 public class MainActivity extends AppCompatActivity {
-private DatabaseManager manager= new DatabaseManager(this);
+    private DatabaseManager manager= new DatabaseManager(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,9 +24,9 @@ private DatabaseManager manager= new DatabaseManager(this);
             startActivity(myIntent);
         }
         if (view.getId()==R.id.BsignIn){
-            EditText login= (EditText)findViewById(R.id.TFlogin);
+            EditText login = (EditText) findViewById(R.id.TFlogin);
             String loginStr= login.getText().toString();
-            EditText pass= (EditText)findViewById(R.id.TFpass);
+            EditText pass = (EditText) findViewById(R.id.TFpass);
             String passStr= pass.getText().toString();
 
 
@@ -39,9 +41,19 @@ private DatabaseManager manager= new DatabaseManager(this);
 
             }
             else
-            {Log.i("FAILED","hasło się nie zgadza");
+            {
+                makeToast(getString(R.string.wrongCredentials));
+                Log.i("FAILED","hasło się nie zgadza");
+
 
             }
         }
+    }
+    private void makeToast(String text){
+        Context context = getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+
     }
 }

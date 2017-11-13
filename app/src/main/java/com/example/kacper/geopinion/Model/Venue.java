@@ -53,6 +53,17 @@ public class Venue {
     @Expose
     private HereNow hereNow;
 
+    public Tip getTip() {
+        return tip;
+    }
+
+    public void setTip(Tip tip) {
+        this.tip = tip;
+    }
+
+    @SerializedName("Tip")
+    @Expose
+    private Tip tip;
     public String getId() {
         return id;
     }

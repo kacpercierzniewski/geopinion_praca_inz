@@ -128,4 +128,8 @@
     <string name="tooFarAway">Jesteś zbyt daleko</string>
     <string name="title_activity_opinion">OpinionActivity</string>
     <string name="sendOpinion">Wyślij Opinię</string>
+    <string name="opinionExists">Wystawiłeś już opinię temu lokalowi!</string>
+    <string name="accountCreated">Konto utworzone pomyślnie!</string>
+    <string name="wrongCredentials">Podano nieprawidłowe dane logowania</string>
+    <string name="writeOpinion">Napisz opnię...</string>
 </resources>
