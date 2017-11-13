@@ -15,6 +15,7 @@ import java.util.List;
  */
 
 class DatabaseManager extends SQLiteOpenHelper {
+    //test after merging
     private static final int DATABASE_VERSION = 18;
     private static final String DATABASE_NAME = "geopinion";
 
