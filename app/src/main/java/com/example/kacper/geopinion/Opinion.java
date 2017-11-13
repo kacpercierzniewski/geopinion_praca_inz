@@ -12,16 +12,8 @@ public class Opinion {
         return user_id;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
-    }
-
     String getVenue_id() {
         return venue_id;
-    }
-
-    public void setVenue_id(String venue_id) {
-        this.venue_id = venue_id;
     }
 
     public String getText() {
@@ -36,9 +28,6 @@ public class Opinion {
         return stars;
     }
 
-    public void setStars(float stars) {
-        this.stars = stars;
-    }
 
     private int user_id;
     private String venue_id;
@@ -50,6 +39,11 @@ public class Opinion {
         this.venue_id=venue_id;
         this.text=text;
         this.stars=stars;
+    }
+    Opinion(int user_id, String venue_id){
+        this.user_id=user_id;
+        this.venue_id=venue_id;
+
     }
 
 }

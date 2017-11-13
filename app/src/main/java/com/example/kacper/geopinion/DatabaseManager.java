@@ -38,7 +38,7 @@ class DatabaseManager extends SQLiteOpenHelper {
     private static final String VENUE_AVERAGESTARS= "average_stars";
     private static final String VENUE_SUMSTARS= "sum_stars";
     private static final String VENUE_CATEGORY= "photo_url";
-    private static final String VENUE_PHOTO_URL= "category";
+ //   private static final String VENUE_PHOTO_URL= "category";
 
     private static final String USER_TABLE_CREATE = "create table users (user_id integer primary key not null ," + "fname text not null , lname text not null , login text not null , pass text not null , email text not null , settings text not null);";
     private static final String VENUE_TABLE_CREATE = "create table venues (venue_api_id text primary key  not null,venue_name text not null,photo_url text, category text, average_stars float not null, sum_stars float not null);";
@@ -146,6 +146,7 @@ class DatabaseManager extends SQLiteOpenHelper {
 
             }
             while (cursor.moveToNext());
+            cursor.close();
         }
 
         }
@@ -209,9 +210,31 @@ class DatabaseManager extends SQLiteOpenHelper {
         return user_id;
 
     }
-    private Integer getQuantityOfOpinions(String id){
+    List<OpinionElement> getOpinionDetalis(String venue_id){
+         List<OpinionElement> opinionList = new ArrayList<>();
+
         db=this.getReadableDatabase();
-        String query = "select * from opinions where venue_api_id='"+id+"';";
+        String query="select users.fname,users.lname,  opinions.text,opinions.stars FROM opinions  JOIN users ON users.user_id=opinions.user_id WHERE opinions.venue_api_id='"+venue_id+"' ";
+        Cursor cursor = db.rawQuery(query,null);
+        Log.i("CURSOR", String.valueOf(cursor));
+        if (cursor.moveToFirst()) {
+
+            do {
+
+                OpinionElement element= new OpinionElement(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getFloat(3));
+                opinionList.add(element);
+
+            }
+            while (cursor.moveToNext());
+
+        }
+
+        return opinionList;
+
+    }
+    private Integer getQuantityOfOpinions(String id) {
+        db = this.getReadableDatabase();
+        String query = "select * from opinions where venue_api_id='" + id + "';";
         Cursor cursor = db.rawQuery(query, null);
         int quantityOfOpinions = cursor.getCount();
         cursor.close();

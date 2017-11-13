@@ -38,7 +38,7 @@ import java.util.List;
 public class MapActivity extends AppCompatActivity
         implements OnMapReadyCallback,GoogleMap.OnMarkerClickListener {
     private List<Marker> markers = new ArrayList<>();
-
+    private DatabaseManager manager= new DatabaseManager(this);
     private LocationManager locationManager;
     private LocationListener locationListener;
     private Location myLocation= new Location(LOCATION_SERVICE);
@@ -184,6 +184,7 @@ public class MapActivity extends AppCompatActivity
 
 
     public void onButtonClick(View view) {
+        button.setEnabled(false);
         startOpinionActivity(index);
 
     }
@@ -264,23 +265,32 @@ public class MapActivity extends AppCompatActivity
     public boolean onMarkerClick(Marker marker) {
         for (int i=0;i<markers.size();i++){
         if (marker.equals(markers.get(i))) {
+            Opinion opinion = new Opinion(Integer.valueOf(Hawk.get("user_id").toString()), item_list.get(i).getId());
 
-                if (Integer.valueOf(item_list.get(i).getLocation().getDistance())<10000){
+            if (!manager.checkIfOpinionExists(opinion)) {
+                if (Integer.valueOf(item_list.get(i).getLocation().getDistance()) < 10000) {
 
-                    Log.i("INFO: ","MARKER "+ item_list.get(i).getName());
-                    Log.i("BUTTON ENABLED: ",String.valueOf(button.isEnabled()));
+                    Log.i("INFO: ", "MARKER " + item_list.get(i).getName());
+                    Log.i("BUTTON ENABLED: ", String.valueOf(button.isEnabled()));
                     button.setEnabled(true);
-                    Log.i("BUTTON ENABLED: ",String.valueOf(button.isEnabled()));
+                    Log.i("BUTTON ENABLED: ", String.valueOf(button.isEnabled()));
 
                     button.setText(String.format("Oceń lokal- %s", item_list.get(i).getName()));
-                    index=i;
-            }
-                else {
+                    index = i;
+                } else {
                     makeToast(getString(R.string.tooFarAwayFromVenue));
                     button.setText(getString(R.string.tooFarAway));
                     button.setEnabled(false);
 
-                }}
+                }
+            }
+            else{
+                button.setEnabled(false);
+                button.setText(R.string.opinionExists);
+
+
+            }
+        }
 
         }
 

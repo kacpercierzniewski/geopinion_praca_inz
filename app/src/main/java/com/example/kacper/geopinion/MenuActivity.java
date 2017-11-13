@@ -20,7 +20,7 @@ public class MenuActivity extends AppCompatActivity {
         }
         if (v.getId()==R.id.Bopinions){
             Log.i("ACTIVITY STARTED","!");
-            Intent intent = new Intent(this,CheckOpinionsActivity.class);
+            Intent intent = new Intent(this,CheckVenuesActivity.class);
             startActivity(intent);
 
         }

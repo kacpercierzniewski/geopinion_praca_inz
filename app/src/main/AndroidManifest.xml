@@ -46,8 +46,8 @@
         <activity android:name=".MapActivity" android:screenOrientation="portrait" />
         <activity android:name=".ExpressOpinionActivity" android:label="@string/title_activity_opinion"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".CheckVenuesActivity" />
         <activity android:name=".CheckOpinionsActivity" />
-        <activity android:name=".CheckVenueActivity"></activity>
     </application>
 
 </manifest>
