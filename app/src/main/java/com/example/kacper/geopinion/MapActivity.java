@@ -1,12 +1,16 @@
 package com.example.kacper.geopinion;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.Settings;
@@ -23,6 +27,7 @@ import android.widget.Toast;
 import com.example.kacper.geopinion.Model.Category;
 import com.example.kacper.geopinion.Model.FoursquareSearch;
 import com.example.kacper.geopinion.Model.Venue;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -31,6 +36,7 @@ import com.orhanobut.hawk.Hawk;
 import retrofit2.Call;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +45,7 @@ public class MapActivity extends AppCompatActivity
         implements OnMapReadyCallback,GoogleMap.OnMarkerClickListener {
     private List<Marker> markers = new ArrayList<>();
     private DatabaseManager manager= new DatabaseManager(this);
-    private LocationManager locationManager;
+    private LocationManager locationManager,locationManager2;
     private LocationListener locationListener;
     private Location myLocation= new Location(LOCATION_SERVICE);
     private GoogleMap map;
@@ -51,26 +57,33 @@ public class MapActivity extends AppCompatActivity
     private boolean locationEstablished =false;
     private boolean snackBarHidden=false;
     private Button button;
+    //   if (mGoogleApiClient == null) {
+
+    //         mGoogleApiClient = new GoogleApiClient.Builder(this)
+
+    // //                 .addConnectionCallbacks(this)
+
+    //                  .addOnConnectionFailedListener(this)//                 .addApi(LocationServices.API)
+
+    //                 .build();
+
+    //}
+
+    private Snackbar internetSnackbar;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ////
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-     //   if (mGoogleApiClient == null) {
-   //         mGoogleApiClient = new GoogleApiClient.Builder(this)
-  // //                 .addConnectionCallbacks(this)
-  //                  .addOnConnectionFailedListener(this)//                 .addApi(LocationServices.API)
-   //                 .build();
-        //}
-    button=(Button)(findViewById(R.id.expressOpinionButton));
+        button=(Button)(findViewById(R.id.expressOpinionButton));
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
                 Log.i("LOCATION CHANGED","!");
-
                    Log.i("ACCURACY:",String.valueOf(location.getAccuracy()));
                    if (location.getAccuracy()<50) {
                        Log.i("ACCURACY GRANTED!","");
@@ -79,19 +92,18 @@ public class MapActivity extends AppCompatActivity
                        moveCameraToLocation();
                        locationManager.removeUpdates(locationListener);
                        if (!locationEstablished){
-                           locationManager.requestLocationUpdates("gps", 2000, 20, locationListener);
+                           locationManager.requestLocationUpdates("gps", 3000, 20, locationListener);
                            locationEstablished =true;
-                           Snackbar mySnackbar= Snackbar.make(findViewById(R.id.map), "Lokalizacja ustalona!",Snackbar.LENGTH_SHORT);
-                           mySnackbar.show();
                        }
 
+                       Snackbar mySnackbar= Snackbar.make(findViewById(R.id.map), "Lokalizacja ustalona!",Snackbar.LENGTH_SHORT);
+                       mySnackbar.show();
                        startSearchingForVenues();
                        snackBarHidden=false;
                    }
                    else
                    {
-                       locationManager.removeUpdates(locationListener);
-                       locationManager.requestLocationUpdates("gps", 2000, 1, locationListener);
+                       locationManager.requestLocationUpdates("gps", 100, 1, locationListener);
                        if (!snackBarHidden) {
                            Snackbar mySnackbar = Snackbar.make(findViewById(R.id.map), "Ustalam dokładną lokalizację...", Snackbar.LENGTH_INDEFINITE);
                            mySnackbar.show();
@@ -116,7 +128,9 @@ public class MapActivity extends AppCompatActivity
             }
         };
 
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { //requestPermissions wymaga od nas conajmniej api23. W przeciwnym razie, nie są wymagane dodatkowe uprawnienia.
+            Log.i("PERMISSIONS","GO");
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
                 //    ActivityCompat#requestPermissions
@@ -127,18 +141,13 @@ public class MapActivity extends AppCompatActivity
                 // for ActivityCompat#requestPermissions for more details.
 
                 requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET}, 10);
+                Log.i("PERMISSIONS","NO LOCATION");
+
                 makeProviderDisabledSnackbar();
                 return;
-            } else {
-                myLocation=locationManager.getLastKnownLocation("gps");
-                if (myLocation!=null && myLocation.getAccuracy()<50){
-                    startSearchingForVenues();
+            }
 
-                }
-                else{
-                    locationManager.requestLocationUpdates("gps",100,1,locationListener);
-                }
-                    }
+
         }
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -153,6 +162,7 @@ public class MapActivity extends AppCompatActivity
 
             case 10:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.i("PERMISSION GRANTED","!");
                     locationManager.requestLocationUpdates("gps", 1000, 10, locationListener);
 
                 }
@@ -169,8 +179,18 @@ public class MapActivity extends AppCompatActivity
 
             map=googleMap;
             map.setOnMarkerClickListener(this);
-            if (myLocation!=null)
-            moveCameraToLocation();
+            myLocation=locationManager.getLastKnownLocation("gps");
+            if (myLocation!=null && myLocation.getAccuracy()<50){
+                moveCameraToLocation();
+                startSearchingForVenues();
+                locationManager.requestLocationUpdates("gps",3000,20,locationListener);
+
+            }
+            else{
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,locationListener);
+
+            }
         } else {
             Log.i("ERROR","NO PERRMISIONS");
             makeProviderDisabledSnackbar();
@@ -266,10 +286,11 @@ public class MapActivity extends AppCompatActivity
     public boolean onMarkerClick(Marker marker) {
         for (int i=0;i<markers.size();i++){
         if (marker.equals(markers.get(i))) {
+marker.hideInfoWindow();
             Opinion opinion = new Opinion(Integer.valueOf(Hawk.get("user_id").toString()), item_list.get(i).getId());
 
             if (!manager.checkIfOpinionExists(opinion)) {
-                if (Integer.valueOf(item_list.get(i).getLocation().getDistance()) < 10000) {
+                if (Integer.valueOf(item_list.get(i).getLocation().getDistance()) < 100) {
 
                     Log.i("INFO: ", "MARKER " + item_list.get(i).getName());
                     Log.i("BUTTON ENABLED: ", String.valueOf(button.isEnabled()));
@@ -307,10 +328,15 @@ public class MapActivity extends AppCompatActivity
     }
     private void makeProviderEnabledSnackbar(){
 
-        Snackbar mySnackbar= Snackbar.make(findViewById(R.id.map), "Lokalizacja włączona",Snackbar.LENGTH_SHORT);
+        Snackbar mySnackbar= Snackbar.make(findViewById(R.id.map),"Ustalam dokładną lokalizację..." ,Snackbar.LENGTH_INDEFINITE);
         mySnackbar.show();
 
     }
+    private void makeInternetDisabledSnackbar(){
+        internetSnackbar=Snackbar.make(findViewById(R.id.map),"Wymagane jest połączenie z internetem!",Snackbar.LENGTH_LONG);
+        internetSnackbar.show();
+        }
+
 private void moveCameraToLocation(){
         if(!cameraIsSet) {
             LatLng location = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
@@ -355,19 +381,27 @@ private void moveCameraToLocation(){
 
                   item_list = explore.getResponse().getVenues();
             } catch (IOException e) {
+                venueFound=false;
+
                 e.printStackTrace();
+                makeInternetDisabledSnackbar();
+                Log.i("PROPABLY NO INTERNET","!");
+
             }
             return item_list;
         }
 
         @Override
         protected void onPostExecute(List<Venue> item_s) {
+            if (venueFound && internetSnackbar!=null){
+                internetSnackbar.dismiss();
+            }
             super.onPostExecute(item_s);
                 for (int i = 0; i < item_s.size(); i++) {
                      double lat = item_list.get(i).getLocation().getLat();
                     double lng = item_list.get(i).getLocation().getLng();
                     LatLng venueLatLng = new LatLng(lat, lng);
-                    Marker marker = map.addMarker(new MarkerOptions().position(venueLatLng).title("Marker in " + item_list.get(i).getName())); //...
+                    Marker marker = map.addMarker(new MarkerOptions().position(venueLatLng).title(item_list.get(i).getName())); //...
                     markers.add(marker);
 
                 }
