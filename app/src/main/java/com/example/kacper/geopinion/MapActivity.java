@@ -29,6 +29,7 @@ import com.example.kacper.geopinion.Model.FoursquareSearch;
 import com.example.kacper.geopinion.Model.Venue;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.*;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -39,6 +40,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class MapActivity extends AppCompatActivity
@@ -85,7 +87,7 @@ public class MapActivity extends AppCompatActivity
             public void onLocationChanged(Location location) {
                 Log.i("LOCATION CHANGED","!");
                    Log.i("ACCURACY:",String.valueOf(location.getAccuracy()));
-                   if (location.getAccuracy()<50) {
+                   if (location.getAccuracy()<1000) {
                        Log.i("ACCURACY GRANTED!","");
                        myLocation= new Location(LOCATION_SERVICE);
                        myLocation.set(location);
@@ -179,7 +181,13 @@ public class MapActivity extends AppCompatActivity
 
             map=googleMap;
             map.setOnMarkerClickListener(this);
+            locationManager.requestLocationUpdates("gps",0,0,locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,locationListener);
+
             myLocation=locationManager.getLastKnownLocation("gps");
+
+   /*         myLocation=locationManager.getLastKnownLocation("gps");
             if (myLocation!=null && myLocation.getAccuracy()<50){
                 moveCameraToLocation();
                 startSearchingForVenues();
@@ -191,15 +199,11 @@ public class MapActivity extends AppCompatActivity
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,locationListener);
 
             }
-        } else {
+        */} else {
             Log.i("ERROR","NO PERRMISIONS");
             makeProviderDisabledSnackbar();
         }
-        // Add a marker in Sydney, Australia,
-        // and move the map's camera to the same location.
-        //     LatLng sydney = new LatLng(-33.852, 151.211);
-        //  googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        //  googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
 
     }
 
@@ -212,76 +216,6 @@ public class MapActivity extends AppCompatActivity
 
 
 
-/*
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        Log.i("Method:","onConnected");
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.i("NO PERMISSIONS","!");
-            makeProviderDisabledSnackbar();
-
-            /// / TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        myLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-
-        if (myLocation != null) {
-            Log.i("LOCATION ","GRANTED!");
-            moveCameraToLocation();
-            if (myLocation.getAccuracy()<50)
-                startSearchingForVenues();
-            else
-            {
-                locationManager.requestLocationUpdates("gps",1000,1,locationListener);
-            }
-
-        }
-        else{
-
-            Log.i("NO LAST KNOW  LOCATION","!");
-
-        }
-    }
-    protected void onStart() {
-        mGoogleApiClient.connect();
-        super.onStart();
-        Log.i("Method:","ONSTART");
-    }
-
-    protected void onStop() {
-        mGoogleApiClient.disconnect();
-        super.onStop();
-        Log.i("Method:","onStop");
-
-    }
-    @Override
-    public void onConnectionSuspended(int i) {
-        Log.i("Method:","onConnectionSuspended");
-
-    }
-
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-        Log.i("Method:","onPointerCaptureChanged");
-
-        moveCameraToLocation();
-            startSearchingForVenues();
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.i("Method:","onConnectionFailed");
-
-    }*/
-
     @Override
     public boolean onMarkerClick(Marker marker) {
         for (int i=0;i<markers.size();i++){
@@ -290,7 +224,7 @@ marker.hideInfoWindow();
             Opinion opinion = new Opinion(Integer.valueOf(Hawk.get("user_id").toString()), item_list.get(i).getId());
 
             if (!manager.checkIfOpinionExists(opinion)) {
-                if (Integer.valueOf(item_list.get(i).getLocation().getDistance()) < 100) {
+                if (Integer.valueOf(item_list.get(i).getLocation().getDistance()) < 200) {
 
                     Log.i("INFO: ", "MARKER " + item_list.get(i).getName());
                     Log.i("BUTTON ENABLED: ", String.valueOf(button.isEnabled()));
@@ -396,12 +330,36 @@ private void moveCameraToLocation(){
             if (venueFound && internetSnackbar!=null){
                 internetSnackbar.dismiss();
             }
-            super.onPostExecute(item_s);
+            super.onPostExecute(item_s); 
                 for (int i = 0; i < item_s.size(); i++) {
                      double lat = item_list.get(i).getLocation().getLat();
                     double lng = item_list.get(i).getLocation().getLng();
                     LatLng venueLatLng = new LatLng(lat, lng);
-                    Marker marker = map.addMarker(new MarkerOptions().position(venueLatLng).title(item_list.get(i).getName())); //...
+
+                    Marker marker = map.addMarker(new MarkerOptions().position(venueLatLng).title(item_list.get(i).getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                    if(item_list.get(i).getCategories().size()==0)
+                        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+else                   if (item_list.get(i).getCategories().get(0).getId().equals( "4bf58dd8d48988d16d941735")) {
+                       marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                    }
+ else                   if (item_list.get(i).getCategories().get(0).getId().equals("4bf58dd8d48988d100951735")) {
+                        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+
+                    }
+else                    if (item_list.get(i).getCategories().get(0).getId().equals("4bf58dd8d48988d13b941735")) {
+                        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+
+                    }
+    else                if (item_list.get(i).getCategories().get(0).getId().equals("4bf58dd8d48988d1fa931735")) {
+                        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+
+                    }
+
+
+
+
+
+
                     markers.add(marker);
 
                 }

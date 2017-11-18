@@ -25,10 +25,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         public void onSignUpButtonClick(View view) {
         error=false;
-        String settings= "0";
-        TextView errorText= (TextView)findViewById(R.id.TVerror);
-        errorText.setText(""); //czyścimy tekst po ponownym kliknięciu przycisku
-        EditText fName= (EditText)findViewById(R.id.TFfName);
+        String settings= "0";EditText fName= (EditText)findViewById(R.id.TFfName);
         EditText lName= (EditText)findViewById(R.id.TFlName);
         EditText login= (EditText)findViewById(R.id.TFlogin);
         EditText pass= (EditText)findViewById(R.id.TFpass);

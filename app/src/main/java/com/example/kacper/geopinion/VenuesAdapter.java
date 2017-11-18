@@ -35,7 +35,7 @@ View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.venue_item
         VenueElement venueElement = venueElements.get(position);
 
         holder.textViewHead.setText(venueElement.getVenue_name());
-        holder.textViewDesc.setText("Kategorie: "+venueElement.getVenue_category()+ "\n   Ilość Opinii:"+venueElement.getQuantityOfOpinions());
+        holder.textViewDesc.setText("Kategorie: "+venueElement.getVenue_category()+ "\n\nIlość Opinii:"+venueElement.getQuantityOfOpinions());
         holder.ratingBar.setRating(venueElement.getAvg_stars());
         holder.id.setText(String.valueOf(venueElement.getVenue_id()));
 
