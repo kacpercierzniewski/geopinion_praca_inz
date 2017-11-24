@@ -48,17 +48,17 @@ public class RegisterActivity extends AppCompatActivity {
         checkEmail(email);
 
 
-        if(manager.checkIfExists("login",login.getText().toString())){
-            login.setError(getString(R.string.loginExists));
-            error=true;
-        }
+            if(manager.checkIfExists("login",login.getText().toString())){
+                login.setError(getString(R.string.loginExists));
+                error=true;
+            }
 
-        if(manager.checkIfExists("email",email.getText().toString())){
-            email.setError(getString(R.string.emailExists));
-            error=true;
-        }
+            if(manager.checkIfExists("email",email.getText().toString())){
+                email.setError(getString(R.string.emailExists));
+                error=true;
+            }
 
-        if (!error){
+        if (!error){ 
             makeToast(getString(R.string.accountCreated));
             Log.i("INFO","no errors");
             User user= new User(fName.getText().toString(),lName.getText().toString(),login.getText().toString(),pass.getText().toString(),email.getText().toString(),settings);
@@ -70,9 +70,10 @@ public class RegisterActivity extends AppCompatActivity {
             //wkładamy dane do bazy
         }
         }
+
         private void checkLetters(EditText l, boolean isLogin){
             String lStr= l.getText().toString();
-            String regex="^[\\p{L}\\s0-9]+$";
+            String regex="^[\\p{L}\\s]+$";
 
             if (isLogin){
                 regex="^[a-zA-Z0-9]+$";
@@ -80,17 +81,13 @@ public class RegisterActivity extends AppCompatActivity {
             if (lStr.length()>20){
 
                 l.setError(getString(R.string.max20characters));
+                error=true;
             }
             if (!(Pattern.matches(regex,lStr))){
                 l.setError(getString(R.string.onlyAlphanumeric));
+                error=true;
 
             }
-            if (lStr.length()<6){
-
-                l.setError(getString(R.string.minimum6Characters));
-
-            }
-
         }
 
         private void checkNoInputError(EditText textField) {
@@ -115,16 +112,24 @@ public class RegisterActivity extends AppCompatActivity {
             String p1str= p1.getText().toString();
             if (p1str.length()<8){
                 p1.setError("Hasło jest za krótkie.");
+                error=true;
             }
+           String  regex="[a-zA-Z0-9]+$";
+            if ((Pattern.matches(regex,p1str))){
+                p1.setError("Wymagany conajmniej jeden znak specjalny");
+                error=true;
+            }
+
         }
         private void checkEmail(EditText m){
             String mStr= m.getText().toString();
             if (!(EmailValidator.getInstance().isValid(mStr))){
                 m.setError("Nieprawidłowy email.");
+                error=true;
             }
-
-
         }
+
+
     private void makeToast(String text){
         Context context = getApplicationContext();
         int duration = Toast.LENGTH_SHORT;

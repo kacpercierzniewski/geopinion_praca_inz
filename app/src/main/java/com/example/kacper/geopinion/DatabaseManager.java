@@ -15,8 +15,7 @@ import java.util.List;
  */
 
 class DatabaseManager extends SQLiteOpenHelper {
-    //test after merging
-    private static final int DATABASE_VERSION = 18;
+    private static final int DATABASE_VERSION = 19;
     private static final String DATABASE_NAME = "geopinion";
 
     private static final String USER_TABLE_NAME = "users";
@@ -39,12 +38,13 @@ class DatabaseManager extends SQLiteOpenHelper {
     private static final String VENUE_AVERAGESTARS= "average_stars";
     private static final String VENUE_SUMSTARS= "sum_stars";
     private static final String VENUE_CATEGORY= "photo_url";
- //   private static final String VENUE_PHOTO_URL= "category";
+    private static final String VENUE_NAME ="venue_name";
+
+    //   private static final String VENUE_PHOTO_URL= "category";
 
     private static final String USER_TABLE_CREATE = "create table users (user_id integer primary key not null ," + "fname text not null , lname text not null , login text not null , pass text not null , email text not null , settings text not null);";
     private static final String VENUE_TABLE_CREATE = "create table venues (venue_api_id text primary key  not null,venue_name text not null,photo_url text, category text, average_stars float not null, sum_stars float not null);";
     private static final String OPINION_TABLE_CREATE = "create table opinions (opinion_id integer primary key not null,user_id integer not null, venue_api_id text not null, text text not null,stars integer not null,FOREIGN KEY(user_id) REFERENCES users(user_id),FOREIGN KEY(venue_api_id) REFERENCES venues(venue_api_id));";
-    private static final String VENUE_NAME ="venue_name";
     private SQLiteDatabase db;
 
     DatabaseManager(Context context) {
@@ -75,7 +75,7 @@ class DatabaseManager extends SQLiteOpenHelper {
 
     void putUserToDB(User u) {
         db = this.getWritableDatabase();
-        ContentValues values = new ContentValues(); //z tego co rozumiem to pomaga we wkładaniu rzeczy do bazy
+        ContentValues values = new ContentValues();
         values.put(USER_FNAME, u.getfName());
         values.put(USER_LNAME, u.getlName());
         values.put(USER_LOGIN, u.getLogin());
@@ -83,7 +83,8 @@ class DatabaseManager extends SQLiteOpenHelper {
         values.put(USER_EMAIL, u.getMail());
         values.put(USER_SETTINGS, u.getSettings());
         db.insert(USER_TABLE_NAME, null, values);
-        db.close(); //ZAWSZE ZAMYKAMY BAZĘ PO INSERCIE !
+        values.clear();
+        db.close();
     }
     void putOpinionToDB(Opinion o){
         db = this.getWritableDatabase();
@@ -215,24 +216,22 @@ class DatabaseManager extends SQLiteOpenHelper {
          List<OpinionElement> opinionList = new ArrayList<>();
 
         db=this.getReadableDatabase();
-        String query="select users.fname,users.lname,  opinions.text,opinions.stars FROM opinions  JOIN users ON users.user_id=opinions.user_id WHERE opinions.venue_api_id='"+venue_id+"' ";
+        String query="select users.fname,users.lname,  opinions.text,opinions.stars FROM opinions  JOIN users ON users.user_id=opinions.user_id WHERE opinions.venue_api_id='"+venue_id+"'";
         Cursor cursor = db.rawQuery(query,null);
         Log.i("CURSOR", String.valueOf(cursor));
         if (cursor.moveToFirst()) {
 
             do {
-
                 OpinionElement element= new OpinionElement(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getFloat(3));
                 opinionList.add(element);
-
             }
             while (cursor.moveToNext());
-
         }
-
+        cursor.close();
+        db.close();
         return opinionList;
 
-    }
+}
     private Integer getQuantityOfOpinions(String id) {
         db = this.getReadableDatabase();
         String query = "select * from opinions where venue_api_id='" + id + "';";
