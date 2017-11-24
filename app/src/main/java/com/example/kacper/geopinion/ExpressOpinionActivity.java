@@ -44,7 +44,7 @@ public class ExpressOpinionActivity extends AppCompatActivity {
         Opinion opinion = new Opinion(user_id,venue_id, text, stars);
         Venue venue= new Venue(venue_id,venue_name,venue_category);
         if (text.equals("")) {
-            tv.setError("Nie dodałeś opisu");
+            tv.setError("Nie dodano opisu.");
         }
         else {
             if (!(db.checkIfOpinionExists(opinion))) {

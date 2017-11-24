@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+            android:text="Nietety, twoj telefon nie posiada oryginalnego oprogramowania, przez co istenieje podejrzenie pozorowania lokalizacji. Nie możesz korzystać z tej aplikacji."
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/textView7"
+    android:layout_margin="8dp"/>
+    <Button
+            android:text="OK"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/BnoRoot" android:onClick="onButtonClick"/>
+</LinearLayout>

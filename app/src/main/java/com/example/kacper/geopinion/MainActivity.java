@@ -1,5 +1,6 @@
 package com.example.kacper.geopinion;
 
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.orhanobut.hawk.Hawk;
+import com.scottyab.rootbeer.RootBeer;
 
 public class MainActivity extends AppCompatActivity {
     private DatabaseManager manager= new DatabaseManager(this);
@@ -16,9 +18,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-    }
+        if (isRooted()) {
+            RootCheckerDialog rootCheckerDialog = new RootCheckerDialog();
+            rootCheckerDialog.show(getFragmentManager(), "MyDialog");
+        }
+        }
+boolean isRooted(){
 
+    RootBeer rootBeer = new RootBeer(getApplicationContext());
+    return rootBeer.isRooted();
+
+}
     public void onButtonClick(View view) {
+        if (view.getId()==R.id.BnoRoot){
+
+            Log.i("CICKED","!");
+            finish();
+
+
+        }
         if(view.getId()==R.id.BsignUp){
             Intent myIntent = new Intent(this, RegisterActivity.class);
             startActivity(myIntent);
@@ -57,4 +75,5 @@ public class MainActivity extends AppCompatActivity {
         toast.show();
 
     }
+
 }

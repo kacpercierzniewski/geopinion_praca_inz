@@ -17,13 +17,13 @@
     <string name="onlyAlphanumeric">Użyto nieprawidłowych znaków.</string>
     <string name="max20characters">Maksymalnie 20 znaków.</string>
     <string name="differentPasswords">Hasła się od siebie różnią.</string>
-    <string name="password">Hasło</string>
-    <string name="eMail">E-mail</string>
-    <string name="signIn">Zarejestruj się !</string>
-    <string name="fName">Imię</string>
-    <string name="lName">Nazwisko</string>
+    <string name="password">Hasło:</string>
+    <string name="eMail">E-mail:</string>
+    <string name="signIn">Zarejestruj się</string>
+    <string name="fName">Imię:</string>
+    <string name="lName">Nazwisko:</string>
     <string name="login">Login</string>
-    <string name="repeatPassword">Powtórz hasło</string>
+    <string name="repeatPassword">Powtórz hasło:</string>
     <string name="logIn">Zaloguj się</string>
     <string name="signUp">Zarejestruj się</string>
     <string name="loginExists">Podany login już istnieje.</string>
@@ -125,11 +125,11 @@
     <string name="checkOpinion">Sprawdź opinie</string>
     <string name="myAccount">Moje konto</string>
     <string name="tooFarAwayFromVenue">Nie możesz ocenić tego lokalu ponieważ jesteś za daleko!</string>
-    <string name="tooFarAway">Jesteś zbyt daleko</string>
+    <string name="tooFarAway">Jesteś zbyt daleko.</string>
     <string name="title_activity_opinion">OpinionActivity</string>
     <string name="sendOpinion">Wyślij Opinię</string>
     <string name="opinionExists">Wystawiłeś już opinię temu lokalowi!</string>
     <string name="accountCreated">Konto utworzone pomyślnie!</string>
-    <string name="wrongCredentials">Podano nieprawidłowe dane logowania</string>
-    <string name="writeOpinion">Napisz opnię...</string>
+    <string name="wrongCredentials">Podano nieprawidłowe dane logowania.</string>
+    <string name="writeOpinion">Napisz opnię…</string>
 </resources>
